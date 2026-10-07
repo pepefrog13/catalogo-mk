@@ -1,16 +1,14 @@
 # Revisión de materiales · MK
 
 **Aviso:** los materiales y sobre todo las especificaciones los escribí yo
-mirando las fotos. Lo deducible (familia del material, colores, si hay franjas,
-tipo de suela) es razonable; **todos los números son inventados**: espesores,
-curtidos, durezas, drop, longitudes. Corrige lo que quieras y me lo pasas.
+mirando las fotos. Lo deducible (familia del material, colores, tipo de suela)
+es razonable; **todos los números son inventados**: espesores, curtidos,
+durezas, alturas. Corrige lo que quieras y me lo pasas.
 
 Formatos: este Markdown y `revision-materiales.csv`.
 
 
-## 001 · MK Terra High
-
-*Zapatillas para hombre · Caña alta · 10 piezas*
+## 001 · MK Terra High  (Caña alta urbana)
 
 | # | Pieza | Material | Tipo | Especificaciones | Corrección |
 |---|---|---|---|---|---|
@@ -25,9 +23,7 @@ Formatos: este Markdown y `revision-materiales.csv`.
 | 9 | Planta | Planta exterior | Caucho con tacos | Dureza 65 Shore A · Altura de taco 4 mm · Compuesto Caucho + carbono |  |
 | 10 | Ojal | Ojal metálico | Acero niquelado | Material Acero niquelado · Diámetro 6 mm · Acabado Mate |  |
 
-## 002 · MK Terra High Trío
-
-*Zapatillas para hombre · Caña alta · 10 piezas*
+## 002 · MK Terra High Trío  (Caña alta urbana)
 
 | # | Pieza | Material | Tipo | Especificaciones | Corrección |
 |---|---|---|---|---|---|
@@ -42,9 +38,7 @@ Formatos: este Markdown y `revision-materiales.csv`.
 | 9 | Planta | Planta exterior | Caucho color miel | Dureza 65 Shore A · Altura de taco 4 mm · Compuesto Caucho natural |  |
 | 10 | Ojal | Ojal metálico | Acero niquelado | Material Acero niquelado · Diámetro 6 mm · Acabado Mate |  |
 
-## 003 · MK Terra High Rojo
-
-*Zapatillas para hombre · Caña alta · 10 piezas*
+## 003 · MK Terra High Rojo  (Caña alta urbana)
 
 | # | Pieza | Material | Tipo | Especificaciones | Corrección |
 |---|---|---|---|---|---|
@@ -59,9 +53,7 @@ Formatos: este Markdown y `revision-materiales.csv`.
 | 9 | Planta | Planta exterior | Caucho con tacos | Dureza 65 Shore A · Altura de taco 4 mm · Compuesto Caucho + carbono |  |
 | 10 | Ojal | Ojal metálico | Acero niquelado | Material Acero niquelado · Diámetro 6 mm · Acabado Mate |  |
 
-## 004 · MK Court Low Negro
-
-*Zapatillas unisex · Caña baja · 10 piezas*
+## 004 · MK Court Low Negro  (Caña baja clásica)
 
 | # | Pieza | Material | Tipo | Especificaciones | Corrección |
 |---|---|---|---|---|---|
@@ -76,9 +68,7 @@ Formatos: este Markdown y `revision-materiales.csv`.
 | 9 | Planta | Planta exterior | Goma natural | Material Goma natural · Altura de taco 2 mm · Uso Ciudad |  |
 | 10 | Forro | Forro interior | Textil de algodón | Composición Algodón · Zona Interior completo |  |
 
-## 005 · MK Court Low Rojo
-
-*Zapatillas unisex · Caña baja · 10 piezas*
+## 005 · MK Court Low Rojo  (Caña baja clásica)
 
 | # | Pieza | Material | Tipo | Especificaciones | Corrección |
 |---|---|---|---|---|---|
@@ -93,9 +83,7 @@ Formatos: este Markdown y `revision-materiales.csv`.
 | 9 | Planta | Planta exterior | Goma natural color miel | Material Goma natural · Altura de taco 2 mm · Uso Ciudad |  |
 | 10 | Forro | Forro interior | Textil de algodón | Composición Algodón · Zona Interior completo |  |
 
-## 006 · MK Court Low Gris
-
-*Zapatillas unisex · Caña baja · 10 piezas*
+## 006 · MK Court Low Gris  (Caña baja clásica)
 
 | # | Pieza | Material | Tipo | Especificaciones | Corrección |
 |---|---|---|---|---|---|
@@ -110,9 +98,7 @@ Formatos: este Markdown y `revision-materiales.csv`.
 | 9 | Planta | Planta exterior | Goma natural color miel | Material Goma natural · Altura de taco 2 mm · Uso Ciudad |  |
 | 10 | Forro | Forro interior | Textil de algodón | Composición Algodón · Zona Interior completo |  |
 
-## 007 · MK Signature Low Rojo
-
-*Zapatillas unisex · Caña baja · 10 piezas*
+## 007 · MK Signature Low Rojo  (Caña baja urbana)
 
 | # | Pieza | Material | Tipo | Especificaciones | Corrección |
 |---|---|---|---|---|---|
@@ -127,9 +113,7 @@ Formatos: este Markdown y `revision-materiales.csv`.
 | 9 | Entresuela | Suela de copa | Goma vulcanizada | Altura 30 mm · Construcción Vulcanizada + cosida · Color Blanco |  |
 | 10 | Planta | Planta exterior | Goma ranurada | Material Goma · Altura de taco 2 mm · Uso Ciudad |  |
 
-## 008 · MK Signature Low Cuero
-
-*Zapatillas unisex · Caña baja · 10 piezas*
+## 008 · MK Signature Low Cuero  (Caña baja urbana)
 
 | # | Pieza | Material | Tipo | Especificaciones | Corrección |
 |---|---|---|---|---|---|
@@ -144,9 +128,7 @@ Formatos: este Markdown y `revision-materiales.csv`.
 | 9 | Entresuela | Suela de copa | Goma vulcanizada | Altura 30 mm · Construcción Vulcanizada + cosida |  |
 | 10 | Planta | Planta exterior | Goma ranurada | Material Goma · Altura de taco 2 mm · Uso Ciudad |  |
 
-## 009 · MK Signature Low Negro
-
-*Zapatillas unisex · Caña baja · 10 piezas*
+## 009 · MK Signature Low Negro  (Caña baja urbana)
 
 | # | Pieza | Material | Tipo | Especificaciones | Corrección |
 |---|---|---|---|---|---|
@@ -160,3 +142,33 @@ Formatos: este Markdown y `revision-materiales.csv`.
 | 8 | Contrafuerte | Contrafuerte | Piel sobre TPU | Refuerzo TPU 1,2 mm · Cobertura Piel lisa |  |
 | 9 | Entresuela | Suela de copa | Goma vulcanizada | Altura 30 mm · Color Crudo · Construcción Vulcanizada + cosida |  |
 | 10 | Planta | Planta exterior | Goma ranurada | Material Goma · Altura de taco 2 mm · Uso Ciudad |  |
+
+## 010 · MK Derby Negro  (Vestir)
+
+| # | Pieza | Material | Tipo | Especificaciones | Corrección |
+|---|---|---|---|---|---|
+| 1 | Piel del corte | Piel de plena flor | Box calf negro | Espesor 1,6 mm · Acabado Box calf · Curtido Vegetal |  |
+| 2 | Vamp | Piel de plena flor | Box calf negro | Piezas Una sola · Zona Antepié |  |
+| 3 | Cordones | Cordón redondo | Algodón encerado 3 mm | Ancho 3 mm · Largo 80 cm · Acabado Encerado |  |
+| 4 | Ojetes | Ojetes metálicos | Latón niquelado | Material Latón niquelado · Pares 5 · Acabado Mate |  |
+| 5 | Lengüeta | Lengüeta de piel | Box calf | Material Box calf · Costura Un lateral · Tipo Derby |  |
+| 6 | Boca | Boca rematada | Piel lisa | Remate Doblado y cosido · Forro Oculto |  |
+| 7 | Contrafuerte | Contrafuerte | Piel sobre TPU | Refuerzo TPU 1,4 mm · Cobertura Piel plena flor |  |
+| 8 | Suela | Suela de goma | Caucho con tacos | Material Caucho · Altura 14 mm · Tacos 3 mm |  |
+| 9 | Tacón | Tacón | Caucho inyectado | Altura 30 mm · Material Caucho · Recambiable Sí |  |
+| 10 | Forro | Forro interior | Piel curtida al vegetal | Material Piel · Curtido Vegetal · Zona Interior completo |  |
+
+## 011 · MK Derby Marrón  (Vestir)
+
+| # | Pieza | Material | Tipo | Especificaciones | Corrección |
+|---|---|---|---|---|---|
+| 1 | Piel del corte | Piel de plena flor | Curtido al vegetal | Espesor 1,6 mm · Curtido Vegetal · Acabado Mate |  |
+| 2 | Vamp | Piel de plena flor | Curtido al vegetal | Piezas Una sola · Zona Antepié |  |
+| 3 | Cordones | Cordón redondo | Algodón encerado 3 mm | Ancho 3 mm · Largo 80 cm · Color Al tono |  |
+| 4 | Ojetes | Ojetes metálicos | Latón envejecido | Material Latón · Pares 5 · Acabado Envejecido |  |
+| 5 | Lengüeta | Lengüeta de piel | Curtido al vegetal | Material Piel · Costura Un lateral · Tipo Derby |  |
+| 6 | Boca | Boca rematada | Piel lisa | Remate Doblado y cosido · Forro Oculto |  |
+| 7 | Contrafuerte | Contrafuerte | Piel sobre TPU | Refuerzo TPU 1,4 mm · Cobertura Piel plena flor |  |
+| 8 | Suela | Suela de goma | Caucho con tacos | Material Caucho · Altura 14 mm · Tacos 3 mm |  |
+| 9 | Tacón | Tacón | Caucho inyectado | Altura 30 mm · Material Caucho · Recambiable Sí |  |
+| 10 | Forro | Forro interior | Piel curtida al vegetal | Material Piel · Curtido Vegetal · Zona Interior completo |  |

@@ -449,10 +449,21 @@ GANCHOS = {
     "zapatillas-007": "Rojo y negro con pespunte a contraste, sobre suela gruesa.",
     "zapatillas-008": "Toda la piel, sin contraste: aquí habla el material.",
     "zapatillas-009": "Negro con pespunte crudo, para que el negro no sea aburrido.",
+    "zapatos-010": "El Derby de siempre, con suela que agarra en la calle.",
+    "zapatos-011": "Piel curtida al vegetal: envejece ganando tono.",
+}
+
+# Una línea por tipo, para el índice y la portada
+LINEAS = {
+    "Caña alta urbana": "Caña alta de suela gruesa y silueta deportiva.",
+    "Caña baja urbana": "Perfil bajo montado sobre suela de copa alta.",
+    "Caña baja clásica": "Corte bajo de líneas finas, franjas y fondo de goma.",
+    "Vestir": "Derby de piel con suela de goma dentada.",
 }
 
 # Orden en que se agrupan los tipos en el índice y en el catálogo.
-ORDEN_TIPOS = ["Caña alta", "Caña media", "Caña baja"]
+ORDEN_TIPOS = ["Caña alta urbana", "Caña baja urbana",
+               "Caña baja clásica", "Vestir"]
 
 
 def _umbrales(a, m=24):
@@ -701,95 +712,131 @@ def ordenar_por_tipo(productos):
     return sorted(productos, key=clave)
 
 
-ALTO_FILA = 62.0        # alto de cada fila del índice
-ALTO_ENC = 34.0         # alto del encabezado de tipo, con su aire
 TOPE_IND = 118.0        # primera Y útil tras la cabecera del índice
+ALTO_ENC = 62.0         # encabezado de un bloque: nombre y descripción
+ALTO_FILA = 17.0        # cada modelo dentro del bloque
+
+
+def agrupar(productos):
+    """Agrupa los productos por tipo, conservando el orden del catálogo."""
+    grupos = []
+    for p in productos:
+        t = p.get("tipo", "")
+        if not grupos or grupos[-1][0] != t:
+            grupos.append((t, []))
+        grupos[-1][1].append(p)
+    return grupos
+
+
+def portada(cat, productos, minis):
+    """Portada: marca, título y una tira con un zapato de cada línea.
+
+    Va antes del índice para que el catálogo se abra con algo que se vea, en
+    lugar de entrar directamente a una lista.
+    """
+    h = cat.nueva("Portada")
+    grupos = agrupar(productos)
+    h.texto(MARGEN, 62, "M K", 15, True, NEGRO, esp=3.4)
+    h.linea(MARGEN, 74, PW - MARGEN, 74, 1.1, NEGRO)
+
+    h.texto(MARGEN, 168, "Colección", 46, True, NEGRO)
+    h.texto(MARGEN, 214, "%d modelos en %d líneas" % (len(productos), len(grupos)),
+            12, False, GRIS)
+    h.linea(MARGEN, 240, PW - MARGEN, 240, 0.6, CLARO)
+
+    # Tira de zapatos: se toma uno de cada línea y se repite la ronda hasta
+    # seis, para que todas las líneas estén representadas.
+    eleccion = []
+    for ronda in range(3):
+        for _, ps in grupos:
+            if ronda < len(ps) and len(eleccion) < 6:
+                eleccion.append(ps[ronda])
+    n = len(eleccion)
+    slot = (PW - 2 * MARGEN) / n
+    caja_w, caja_h = slot - 14, 104.0
+    for k, q in enumerate(eleccion):
+        nom, aw, ah = minis[q["id"]][:3]
+        w, hh = encajar(aw, ah, caja_w, caja_h)
+        x = MARGEN + k * slot + (slot - w) / 2
+        h.imagen(nom, x, 268 + (caja_h - hh) / 2, w, hh)
+
+    h.linea(MARGEN, 404, PW - MARGEN, 404, 0.5, CLARO)
+
+    # Las líneas, repartidas a lo ancho
+    slot2 = (PW - 2 * MARGEN) / len(grupos)
+    for k, (tipo, ps) in enumerate(grupos):
+        x = MARGEN + k * slot2
+        h.texto(x, 434, tipo.upper(), 9.5, True, NEGRO)
+        h.texto(x, 452, "%d modelo%s" % (len(ps), "s" if len(ps) != 1 else ""),
+                8.5, False, GRIS)
+
+    h.texto(MARGEN, h.pie_y - 22,
+            "Precios en soles. Materiales y acabados sujetos a variación de lote.",
+            8, False, GRIS)
+    return h
 
 
 def repartir_indice(productos):
-    """Reparte el índice en páginas antes de dibujarlo.
+    """Reparte los bloques del índice en páginas, antes de dibujarlo.
 
-    Hace falta porque el número de páginas del índice condiciona en qué
-    página empieza cada modelo, y a su vez el índice imprime ese número.
-    Se resuelve simulando el reparto con aritmética, sin tocar el PDF.
-
-    Devuelve una lista de páginas; cada una es una lista de
-    (encabezado o None, producto).
+    Hace falta porque el número de páginas del índice decide en qué página
+    empieza cada modelo, y el índice imprime ese número. Se resuelve con
+    aritmética, sin tocar el PDF.
     """
     tope = PHV - 34 - 14
-    paginas, actual, y, tipo = [], [], TOPE_IND, None
-    for p in productos:
-        t = p.get("tipo", "")
-        enc, alto = None, ALTO_FILA
-        if t != tipo:
-            enc, tipo = t, t
-            alto += ALTO_ENC
-        # si no cabe, página nueva repitiendo el encabezado del tipo
+    paginas, actual, y = [], [], TOPE_IND
+    for tipo, ps in agrupar(productos):
+        alto = ALTO_ENC + len(ps) * ALTO_FILA
         if y + alto > tope and actual:
             paginas.append(actual)
             actual, y = [], TOPE_IND
-            if enc is None:
-                enc, alto = t, ALTO_FILA + ALTO_ENC
-        actual.append((enc, p))
-        y += alto
+        actual.append((tipo, ps))
+        y += alto + 10
     if actual:
         paginas.append(actual)
     return paginas
 
 
 def indice(cat, productos, paginas, minis):
-    """Índice de modelos, en VERTICAL y agrupado por tipo.
+    """Índice por líneas, no por modelo, en VERTICAL.
 
-    Va en vertical a propósito: en el móvil una página apaisada obliga a
-    girar el teléfono, y este índice es la puerta de entrada al catálogo.
-    Cada fila es una zona pulsable que salta a la ficha del modelo.
+    Cada línea ocupa un bloque con una miniatura de muestra, su descripción y
+    la lista de modelos. Así el índice no crece sin freno al añadir modelos, y
+    cada nombre sigue siendo pulsable para ir a su ficha.
 
-    Se reparte solo en varias páginas si hace falta: con nueve modelos cabe
-    en una, pero añadir más no lo rompe.
+    Va en vertical a propósito: en el móvil una página apaisada obliga a girar
+    el teléfono, y este índice es la puerta de entrada al catálogo.
     """
     reparto = repartir_indice(productos)
-    for n_pag, filas in enumerate(reparto):
-        h = cat.nueva("Índice" if n_pag == 0 else "Índice · continuación",
-                      PWV, PHV)
+    for n_pag, bloques in enumerate(reparto):
+        h = cat.nueva("Índice" if n_pag == 0 else "Índice · continuación", PWV, PHV)
         W = h.ancho
-        util = W - 2 * MARGEN
-        if n_pag == 0:
-            h.texto(MARGEN, 62, "Índice", 22, True, NEGRO)
-            h.texto(MARGEN, 81, "Colección completa, agrupada por tipo de caña",
-                    9.5, False, GRIS)
-            h.linea(MARGEN, 96, W - MARGEN, 96, 1.1, NEGRO)
-        else:
-            h.texto(MARGEN, 62, "Índice", 22, True, NEGRO)
-            h.texto(MARGEN, 81, "continuación", 9.5, False, GRIS)
-            h.linea(MARGEN, 96, W - MARGEN, 96, 1.1, NEGRO)
+        h.texto(MARGEN, 62, "Índice", 22, True, NEGRO)
+        h.texto(MARGEN, 81,
+                "Colección completa, agrupada por línea" if n_pag == 0 else "continuación",
+                9.5, False, GRIS)
+        h.linea(MARGEN, 96, W - MARGEN, 96, 1.1, NEGRO)
 
         y = TOPE_IND
-        for enc, q in filas:
-            if enc is not None:
-                if y > TOPE_IND:
-                    y += 12          # aire entre grupos
-                h.texto(MARGEN, y, enc.upper(), 8.5, True, GRIS)
-                h.linea(MARGEN, y + 6, W - MARGEN, y + 6, 0.6, CLARO)
-                y += ALTO_ENC
-
-            cw, ch = 96.0, 54.0
-            nom, aw, ah = minis[q["id"]][:3]
+        for tipo, ps in bloques:
+            cw, ch = 150.0, 104.0
+            nom, aw, ah = minis[ps[0]["id"]][:3]
             w, hh = encajar(aw, ah, cw, ch)
             h.imagen(nom, MARGEN + (cw - w) / 2, y + (ch - hh) / 2, w, hh)
+            h.enlace(MARGEN, y, cw, ch, paginas[ps[0]["id"]] - 1)
 
-            tx = MARGEN + cw + 16
-            h.texto(tx, y + 24, q["nombre"], 12.5, True, NEGRO)
-            h.texto(tx, y + 40, "%s  ·  %d color%s" % (
-                q["categoria"], q["colores"],
-                "es" if q["colores"] != 1 else ""), 8.5, False, GRIS)
-            h.texto(500, y + 24, eur(q["precio"]), 11, True, NEGRO, izq="derecha")
-            h.texto(W - MARGEN, y + 24, "pág. %d" % paginas[q["id"]],
-                    9.5, False, GRIS, izq="derecha")
-            h.linea(MARGEN, y + ALTO_FILA - 6, W - MARGEN, y + ALTO_FILA - 6,
-                    0.5, CLARO)
-
-            h.enlace(MARGEN, y - 4, util, ALTO_FILA, paginas[q["id"]] - 1)
-            y += ALTO_FILA
+            tx = MARGEN + cw + 22
+            h.texto(tx, y + 22, tipo.upper(), 14, True, NEGRO)
+            h.texto(tx, y + 41, LINEAS.get(tipo, ""), 8.5, False, GRIS)
+            yl = y + 62
+            for q in ps:
+                h.texto(tx, yl, q["nombre"], 9.5, False, GRIS)
+                h.texto(W - MARGEN, yl, "pág. %d" % paginas[q["id"]], 9, False, GRIS,
+                        izq="derecha")
+                h.enlace(tx, yl - 9, W - MARGEN - tx, 15, paginas[q["id"]] - 1)
+                yl += ALTO_FILA
+            h.linea(MARGEN, yl + 3, W - MARGEN, yl + 3, 0.5, CLARO)
+            y = yl + 13
     return len(reparto)
 
 
@@ -843,11 +890,12 @@ def main():
     # Se simula el reparto antes de numerar nada.
     n_indice = len(repartir_indice(productos))
     paginas = {}
-    n = 1 + n_indice
+    n = 2 + n_indice             # 1 portada + las páginas del índice
     for p in productos:
         paginas[p["id"]] = n
         n += 1 + (1 if p.get("angulos") else 0)
 
+    portada(cat, productos, minis)
     indice(cat, productos, paginas, minis)
 
     for p in productos:
@@ -862,8 +910,8 @@ def main():
 
     for t in temporales:
         t.unlink(missing_ok=True)
-    marcadores = [("Índice", 0)] + [(q["nombre"], paginas[q["id"]] - 1)
-                                    for q in productos]
+    marcadores = ([("Portada", 0), ("Índice", 1)]
+                  + [(q["nombre"], paginas[q["id"]] - 1) for q in productos])
     n = cat.emitir("Catálogo MK", marcadores)
     kb = SALIDA.stat().st_size / 1024
     extra = sum(1 for p in productos if p.get("angulos"))
