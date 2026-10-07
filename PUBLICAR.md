@@ -20,7 +20,7 @@ En https://github.com/new
 - **Public** ← importante: Pages gratis solo funciona en repositorios públicos
 - **No** marques "Add a README", ni licencia, ni .gitignore. Tiene que nacer vacío.
 
-Quedará en `https://github.com/Jchino24/catalogo-mk`
+El repositorio **ya está creado, vacío y público**, con `main` como rama por defecto.
 
 ### 2 · Crear un token de acceso
 
@@ -39,13 +39,13 @@ En https://github.com/settings/tokens
 
 ```bash
 cd /home/josfx/Documentos/deepseek-harness/default-workspace/zapatillas-mk
-git remote add origin https://github.com/Jchino24/catalogo-mk.git
+git remote add origin https://github.com/pepefrog13/catalogo-mk.git
 git push -u origin main
 ```
 
 Te pedirá:
 
-- **Username**: `Jchino24`
+- **Username**: `pepefrog13`
 - **Password**: el **token**, no tu contraseña de GitHub
 
 ### 4 · Activar Pages
@@ -59,7 +59,7 @@ En el repositorio: **Settings → Pages**
 En un minuto está en:
 
 ```
-https://jchino24.github.io/catalogo-mk/
+https://pepefrog13.github.io/catalogo-mk/
 ```
 
 ---
@@ -70,7 +70,7 @@ Se genera un par de claves, se le da la pública a GitHub y no vuelves a
 escribir credenciales.
 
 ```bash
-ssh-keygen -t ed25519 -C "jchino@ulasalle.edu.pe" -f ~/.ssh/id_ed25519 -N ""
+ssh-keygen -t ed25519 -C "pepefrog13@users.noreply.github.com" -f ~/.ssh/id_ed25519 -N ""
 cat ~/.ssh/id_ed25519.pub
 ```
 
@@ -80,7 +80,7 @@ Después:
 
 ```bash
 cd /home/josfx/Documentos/deepseek-harness/default-workspace/zapatillas-mk
-git remote add origin git@github.com:Jchino24/catalogo-mk.git
+git remote add origin git@github.com:pepefrog13/catalogo-mk.git
 git push -u origin main
 ```
 
