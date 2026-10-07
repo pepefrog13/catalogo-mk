@@ -44,7 +44,7 @@ img{ max-width:100%; display:block; }
   position:sticky; top:0; background:#fff; z-index:30;
 }
 .marca{
-  font-weight:700; font-size:19px; letter-spacing:.44em;
+  font-weight:700; font-size:19px; letter-spacing:.15em;
   color:#111; text-decoration:none; white-space:nowrap;
 }
 .buscador{
@@ -152,7 +152,8 @@ img{ max-width:100%; display:block; }
   display:flex; align-items:center; gap:7px;
 }
 .volver:hover{ color:var(--gris); }
-.cab-detalle .marca{ margin-left:auto; font-size:20px; }
+.cab-detalle .marca{ font-size:19px; order:-1; }
+.cab-detalle .volver{ margin-left:auto; }
 
 .detalle{
   display:grid;
@@ -189,7 +190,21 @@ img{ max-width:100%; display:block; }
   transform-origin: 0 0;
   will-change: transform;
 }
+/* Solo al centrar una pieza desde la lista. Con la rueda y el arrastre la
+   respuesta tiene que ser inmediata, así que van sin transición. */
+.lienzo.suave{ transition: transform .44s cubic-bezier(.32,.72,0,1); }
 .lienzo img{ width:100%; height:100%; user-select:none; -webkit-user-drag:none; }
+
+/* ── Salir y volver ──
+   Bajar del todo, o arrastrar hacia abajo, cierra la ficha: es el gesto de
+   siempre para salir de una foto a pantalla completa. */
+#vistaDetalle{ transition: transform .3s cubic-bezier(.32,.72,0,1), opacity .3s; }
+#vistaDetalle.saliendo{ transform: translateY(48px); opacity:0; }
+#vistaCatalogo.entrando{ animation: entrar .4s cubic-bezier(.32,.72,0,1) both; }
+@keyframes entrar{
+  from{ opacity:0; transform: translateY(-16px); }
+  to  { opacity:1; transform:none; }
+}
 
 /* ── Panel ── */
 .ayuda{
@@ -480,7 +495,7 @@ img{ max-width:100%; display:block; }
       <div class="lienzo" id="lienzo">
         <img id="foto" alt="" draggable="false">
       </div>
-      <p class="pista">Rueda o pellizco para acercar · arrastra para mover · doble clic para volver</p>
+      <p class="pista">Rueda o pellizco para acercar · arrastra para mover · baja para volver</p>
     </div>
 
     <aside class="panel">
@@ -1349,6 +1364,7 @@ const K_MIN = 1, K_MAX = 5;
 
 const Z = { k:1, tx:0, ty:0, ancho:0, alto:0, arrastrando:false, sel:null };
 let arrastroReciente = false;
+let bajo = 0;   // arrastre acumulado hacia abajo, para salir
 let ultimo = null;
 
 /* Ajusta el lienzo para que la imagen encaje entera en el escenario */
@@ -1443,6 +1459,11 @@ function enfocar(id){
   Z.k = Math.min(k2, K_MAX);
   Z.tx = r.width  / 2 - ux * Z.k;
   Z.ty = r.height / 2 - uy * Z.k;
+  // Deslizamiento suave; se quita al terminar para no arrastrar el retardo
+  // en los movimientos con la rueda.
+  lienzo.classList.add("suave");
+  clearTimeout(enfocar._t);
+  enfocar._t = setTimeout(() => lienzo.classList.remove("suave"), 470);
   aplicar();
 }
 
@@ -1467,6 +1488,23 @@ function abrirDetalle(id, silencioso){
   const listo = () => { ajustarLienzo(); pintarFicha(); aplicar(); };
   if (foto.complete) requestAnimationFrame(listo);
   else foto.addEventListener("load", () => requestAnimationFrame(listo), { once:true });
+}
+
+/* Cierra la ficha bajando la vista y devuelve el catálogo con una entrada
+   suave, en vez de un cambio seco. */
+let saliendo = false;
+function salirConAnimacion(){
+  if (saliendo || $("#vistaDetalle").classList.contains("oculto")) return;
+  saliendo = true;
+  const d = $("#vistaDetalle"), c = $("#vistaCatalogo");
+  d.classList.add("saliendo");
+  setTimeout(() => {
+    d.classList.remove("saliendo");
+    saliendo = false;
+    cerrarDetalle();
+    c.classList.add("entrando");
+    setTimeout(() => c.classList.remove("entrando"), 420);
+  }, 300);
 }
 
 function cerrarDetalle(silencioso){
@@ -1536,6 +1574,8 @@ $("#pLista").addEventListener("click", (e) => {
 /* Rueda = zoom hacia el cursor */
 escenario.addEventListener("wheel", (e) => {
   e.preventDefault();
+  // A aumento base, bajar es salir. Si ya está acercado, primero aleja.
+  if (e.deltaY > 0 && Z.k <= K_MIN + 0.01){ salirConAnimacion(); return; }
   const p = relativo(e);
   zoomEn(e.deltaY < 0 ? 1.15 : 1/1.15, p.x, p.y);
 }, { passive:false });
@@ -1545,6 +1585,7 @@ escenario.addEventListener("pointerdown", (e) => {
   if (e.button !== 0) return;
   Z.arrastrando = true;
   arrastroReciente = false;
+  bajo = 0;
   ultimo = { x:e.clientX, y:e.clientY, tx:Z.tx, ty:Z.ty };
   escenario.classList.add("arrastrando");
   escenario.setPointerCapture(e.pointerId);
@@ -1556,6 +1597,9 @@ escenario.addEventListener("pointermove", (e) => {
   if (Z.arrastrando && ultimo){
     const dx = e.clientX - ultimo.x, dy = e.clientY - ultimo.y;
     if (Math.abs(dx) + Math.abs(dy) > 3) arrastroReciente = true;
+    // A aumento base el lienzo no tiene por dónde moverse: el gesto hacia
+    // abajo se interpreta como salir.
+    if (Z.k <= K_MIN + 0.01 && dy > 0) bajo = Math.max(bajo, dy);
     Z.tx = ultimo.tx + dx;
     Z.ty = ultimo.ty + dy;
     aplicar();
@@ -1564,6 +1608,8 @@ escenario.addEventListener("pointermove", (e) => {
 
 function soltar(e){
   if (!Z.arrastrando) return;
+  if (bajo > 90){ Z.arrastrando = false; ultimo = null; bajo = 0;
+    escenario.classList.remove("arrastrando"); salirConAnimacion(); return; }
   Z.arrastrando = false; ultimo = null;
   escenario.classList.remove("arrastrando");
   try { escenario.releasePointerCapture(e.pointerId); } catch(_){}
