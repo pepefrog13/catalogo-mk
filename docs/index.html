@@ -1471,7 +1471,7 @@ function abrirDetalle(id, silencioso){
   const p = PRODUCTOS.find(x => x.id === id);
   if (!p) return;
   if (!silencioso) location.hash = "#/" + id;
-  Z.producto = p; Z.sel = null; Z.k = 1; Z.tx = 0; Z.ty = 0;
+  Z.producto = p; Z.sel = null; Z.k = 1; Z.tx = 0; Z.ty = 0; bajo = 0;
 
   foto.src = p.img;
   foto.alt = p.nombre;
@@ -1608,8 +1608,13 @@ escenario.addEventListener("pointermove", (e) => {
 
 function soltar(e){
   if (!Z.arrastrando) return;
-  if (bajo > 90){ Z.arrastrando = false; ultimo = null; bajo = 0;
-    escenario.classList.remove("arrastrando"); salirConAnimacion(); return; }
+  if (bajo > 90){
+    Z.arrastrando = false; ultimo = null; bajo = 0;
+    escenario.classList.remove("arrastrando");
+    try { escenario.releasePointerCapture(e.pointerId); } catch(_){}
+    salirConAnimacion();
+    return;
+  }
   Z.arrastrando = false; ultimo = null;
   escenario.classList.remove("arrastrando");
   try { escenario.releasePointerCapture(e.pointerId); } catch(_){}
