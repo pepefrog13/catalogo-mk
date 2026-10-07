@@ -195,6 +195,40 @@ img{ max-width:100%; display:block; }
 .lienzo.suave{ transition: transform .44s cubic-bezier(.32,.72,0,1); }
 .lienzo img{ width:100%; height:100%; user-select:none; -webkit-user-drag:none; }
 
+/* ── Visor a pantalla completa ──
+   Es el mismo escenario, no una copia: al ocupar toda la ventana hereda el
+   zoom, el arrastre y el centrado que ya funcionaban en la ficha. */
+.escenario.completo{
+  position:fixed; inset:0; z-index:70;
+  height:100vh; height:100dvh; max-height:none;
+  border:0; background:#fff;
+  animation: abrirVisor .34s cubic-bezier(.32,.72,0,1);
+}
+@keyframes abrirVisor{
+  from{ opacity:0; transform:scale(.96); }
+  to  { opacity:1; transform:none; }
+}
+.cerrar-visor{
+  position:absolute; top:14px; right:14px; z-index:6;
+  width:44px; height:44px; border-radius:50%; padding:0;
+  border:1px solid #e0e0e0; background:#fff; color:#111;
+  font-size:16px; line-height:1; cursor:pointer;
+  display:none; place-items:center;
+  box-shadow: 0 2px 14px rgba(0,0,0,.12);
+  transition: border-color .15s, transform .15s;
+}
+.escenario.completo .cerrar-visor{ display:grid; }
+.cerrar-visor:hover{ border-color:#111; transform:scale(1.06); }
+.etiqueta-visor{
+  position:absolute; left:0; right:0; bottom:0; z-index:5;
+  padding: 34px 20px 16px; text-align:center; pointer-events:none;
+  font-size:12.5px; color:var(--gris); letter-spacing:.03em;
+  background: linear-gradient(transparent, rgba(255,255,255,.95) 62%);
+  display:none;
+}
+.escenario.completo .etiqueta-visor{ display:block; }
+.escenario.completo .pista{ display:none; }
+
 /* ── Salir y volver ──
    Bajar del todo, o arrastrar hacia abajo, cierra la ficha: es el gesto de
    siempre para salir de una foto a pantalla completa. */
@@ -495,16 +529,18 @@ img{ max-width:100%; display:block; }
       <div class="lienzo" id="lienzo">
         <img id="foto" alt="" draggable="false">
       </div>
-      <p class="pista">Rueda o pellizco para acercar · arrastra para mover · baja para volver</p>
+      <p class="pista">Toca una pieza para verla a pantalla completa</p>
+      <button class="cerrar-visor" id="cerrarVisor" aria-label="Cerrar la imagen">✕</button>
+      <span class="etiqueta-visor" id="etiquetaVisor"></span>
     </div>
 
     <aside class="panel">
       <h2 id="pNombre">—</h2>
       <p class="p-cat" id="pCategoria">—</p>
       <p class="p-precio" id="pPrecio">—</p>
-      <p class="ayuda">Toca un nombre de la lista para ver de qué material es
-        cada parte. La foto se acerca con la rueda o pellizcando, y se mueve
-        arrastrando.</p>
+      <p class="ayuda">Toca una pieza de la lista y la foto se abre a pantalla
+        completa, centrada en esa parte. Se cierra con la ✕ de la esquina o
+        bajando.</p>
       <p class="seccion">Las piezas, una a una</p>
       <div id="pLista"></div>
       <div id="pFicha"></div>
@@ -1490,6 +1526,33 @@ function abrirDetalle(id, silencioso){
   else foto.addEventListener("load", () => requestAnimationFrame(listo), { once:true });
 }
 
+/* ── Visor a pantalla completa ──
+   Se reutiliza el mismo escenario: al pasar a `position:fixed` ocupa toda la
+   ventana y conserva el zoom, el arrastre y el centrado. */
+function abrirVisor(id){
+  const abriendo = !escenario.classList.contains("completo");
+  if (abriendo){
+    escenario.classList.add("completo");
+    document.body.style.overflow = "hidden";
+  }
+  const q = Z.producto && Z.producto.piezas.find(x => x.id === id);
+  $("#etiquetaVisor").textContent = q ? q.label + " · " + q.material : "";
+  // El escenario acaba de cambiar de tamaño: hay que recalcular antes de
+  // centrar, o se centraría con las medidas del hueco pequeño.
+  requestAnimationFrame(() => {
+    ajustarLienzo();
+    if (id) enfocar(id); else aplicar();
+  });
+}
+
+function cerrarVisor(){
+  if (!escenario.classList.contains("completo")) return;
+  escenario.classList.remove("completo");
+  document.body.style.overflow = "";
+  Z.k = 1; Z.tx = 0; Z.ty = 0;
+  requestAnimationFrame(() => { ajustarLienzo(); aplicar(); });
+}
+
 /* Cierra la ficha bajando la vista y devuelve el catálogo con una entrada
    suave, en vez de un cambio seco. */
 let saliendo = false;
@@ -1508,6 +1571,11 @@ function salirConAnimacion(){
 }
 
 function cerrarDetalle(silencioso){
+  // Si se cierra la ficha con el visor abierto, hay que deshacerlo todo: si no,
+  // el escenario se queda fijo tapando el catálogo y el fondo bloqueado.
+  escenario.classList.remove("completo");
+  document.body.style.overflow = "";
+  Z.k = 1; Z.tx = 0; Z.ty = 0;
   if (!silencioso) history.replaceState(null, "", location.pathname + location.search);
   $("#vistaDetalle").classList.add("oculto");
   $("#vistaCatalogo").classList.remove("oculto");
@@ -1567,15 +1635,23 @@ window.addEventListener("hashchange", sincronizarHash);
 $("#pLista").addEventListener("click", (e) => {
   const b = e.target.closest(".pieza"); if (!b) return;
   const id = b.dataset.pieza;
-  seleccionar(id === Z.sel ? null : id);
-  if (Z.sel) enfocar(Z.sel);
+  // Volver a tocar la misma pieza cierra el visor
+  if (id === Z.sel && escenario.classList.contains("completo")){ cerrarVisor(); return; }
+  seleccionar(id);
+  abrirVisor(id);
 });
+$("#cerrarVisor").addEventListener("click", cerrarVisor);
 
 /* Rueda = zoom hacia el cursor */
 escenario.addEventListener("wheel", (e) => {
   e.preventDefault();
-  // A aumento base, bajar es salir. Si ya está acercado, primero aleja.
-  if (e.deltaY > 0 && Z.k <= K_MIN + 0.01){ salirConAnimacion(); return; }
+  // A aumento base, bajar cierra el visor; si no está abierto, sale de la
+  // ficha. Si ya está acercado, primero aleja.
+  if (e.deltaY > 0 && Z.k <= K_MIN + 0.01){
+    if (escenario.classList.contains("completo")) cerrarVisor();
+    else salirConAnimacion();
+    return;
+  }
   const p = relativo(e);
   zoomEn(e.deltaY < 0 ? 1.15 : 1/1.15, p.x, p.y);
 }, { passive:false });
@@ -1583,6 +1659,9 @@ escenario.addEventListener("wheel", (e) => {
 /* Arrastrar = desplazar */
 escenario.addEventListener("pointerdown", (e) => {
   if (e.button !== 0) return;
+  // La ✕ vive dentro del escenario: si no se excluye, el arrastre captura el
+  // puntero y el clic no le llega.
+  if (e.target.closest(".cerrar-visor")) return;
   Z.arrastrando = true;
   arrastroReciente = false;
   bajo = 0;
@@ -1612,7 +1691,8 @@ function soltar(e){
     Z.arrastrando = false; ultimo = null; bajo = 0;
     escenario.classList.remove("arrastrando");
     try { escenario.releasePointerCapture(e.pointerId); } catch(_){}
-    salirConAnimacion();
+    if (escenario.classList.contains("completo")) cerrarVisor();
+    else salirConAnimacion();
     return;
   }
   Z.arrastrando = false; ultimo = null;
@@ -1633,10 +1713,15 @@ document.addEventListener("keydown", (e) => {
   const k = e.key.toLowerCase();
   if (k === "escape"){ cerrarDetalle(); return; }
   if (k === "0"){ seleccionar(null); reiniciarZoom(); return; }
+  if (k === "Escape"){
+    if (escenario.classList.contains("completo")) cerrarVisor();
+    else salirConAnimacion();
+    return;
+  }
   const n = parseInt(k, 10);
   if (n >= 1 && n <= 9){
     const q = Z.producto.piezas.find(x => x.n === n);
-    if (q){ seleccionar(q.id); enfocar(q.id); }
+    if (q){ seleccionar(q.id); abrirVisor(q.id); }
   }
 });
 
