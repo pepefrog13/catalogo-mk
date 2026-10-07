@@ -162,6 +162,14 @@ img{ max-width:100%; display:block; }
 }
 
 /* ── Escenario ── */
+.pista{
+  position:absolute; left:0; right:0; bottom:0;
+  padding: 26px 18px 11px; text-align:center; pointer-events:none;
+  font-size:11.5px; color:var(--gris); letter-spacing:.02em;
+  background: linear-gradient(transparent, rgba(255,255,255,.92) 62%);
+  opacity:1; transition: opacity .25s;
+}
+.escenario.zoom .pista{ opacity:0; }
 .escenario{
   position:relative;
   background:#fff;
@@ -182,57 +190,6 @@ img{ max-width:100%; display:block; }
   will-change: transform;
 }
 .lienzo img{ width:100%; height:100%; user-select:none; -webkit-user-drag:none; }
-
-/* ── Hotspots ── */
-.punto{
-  position:absolute;
-  width:30px; height:30px; margin:0;
-  border-radius:50%;
-  background:#fff;
-  border:1.5px solid var(--tinta);
-  color:var(--tinta);
-  font-size:13px; font-weight:700;
-  display:grid; place-items:center;
-  transform-origin:center;
-  box-shadow: 0 2px 8px rgba(0,0,0,.18);
-  transition: background .15s, color .15s;
-  padding:0;
-}
-.punto:hover{ background:var(--tinta); color:#fff; }
-.punto[aria-pressed="true"]{ background:var(--tinta); color:#fff; }
-.punto.atenuado{ opacity:.28; }
-.punto::after{
-  content: attr(data-label);
-  position:absolute; top: calc(100% + 8px); left:50%;
-  transform: translateX(-50%);
-  background:#111; color:#fff;
-  font-size:11px; font-weight:600; letter-spacing:.04em;
-  padding: 4px 9px; border-radius:4px;
-  white-space:nowrap; opacity:0; pointer-events:none;
-  transition: opacity .15s;
-}
-.punto:hover::after{ opacity:1; }
-
-/* ── Lupa ── */
-.lupa{
-  position:absolute; width:190px; height:190px; border-radius:50%;
-  border:2px solid var(--tinta);
-  box-shadow: 0 14px 40px rgba(0,0,0,.22);
-  background-color:#fff;
-  background-repeat:no-repeat;
-  pointer-events:none; z-index:20;
-  transform: translate(-50%,-50%);
-  opacity:0; transition: opacity .14s;
-}
-.lupa.activa{ opacity:1; }
-.lupa::after{
-  content: attr(data-label);
-  position:absolute; left:0; right:0; bottom:0;
-  background: linear-gradient(transparent, rgba(255,255,255,.95) 55%);
-  color:var(--tinta); font-size:10px; font-weight:700;
-  letter-spacing:.12em; text-transform:uppercase; text-align:center;
-  padding: 18px 0 7px;
-}
 
 /* ── Panel ── */
 .ayuda{
@@ -417,33 +374,11 @@ img{ max-width:100%; display:block; }
   background-size: 8px 8px, 12px 12px;
 }
 
-/* ── Barra de zoom ── */
-.barra-zoom{
-  display:flex; align-items:center; gap:9px;
-  padding: 13px 44px;
-  border-top:1px solid var(--linea);
-  background:#fff;
-  position: sticky; bottom:0; z-index:25;
-  flex-wrap:wrap;
-}
-.zbtn{
-  background:#fff; border:1px solid var(--linea); border-radius:999px;
-  padding: 8px 16px; font-size:13px; font-weight:500; color:var(--tinta);
-  transition: border-color .15s, background .15s;
-}
-.zbtn:hover{ border-color:var(--tinta); }
-.zbtn.activo{ background:var(--tinta); border-color:var(--tinta); color:#fff; }
-.zbtn:disabled{ opacity:.35; cursor:not-allowed; }
-.zoom-lectura{
-  margin-left:auto; font-size:12px; color:var(--gris);
-  font-variant-numeric: tabular-nums; letter-spacing:.04em;
-}
-
 /* ══ RESPONSIVE ════════════════════════════════════════════════════ */
 
 @media (max-width: 1080px){
   .catalogo{ padding: 30px 28px 80px; grid-template-columns:186px minmax(0,1fr); gap:0 30px; }
-  .cabecera, .cab-detalle, .barra-zoom{ padding-left:28px; padding-right:28px; }
+  .cabecera, .cab-detalle{ padding-left:28px; padding-right:28px; }
   .rejilla{ grid-template-columns: repeat(2, 1fr); }
   .detalle{ grid-template-columns: minmax(0,1fr) 320px; }
 }
@@ -463,7 +398,7 @@ img{ max-width:100%; display:block; }
   .linea[aria-pressed="true"]{ border-color:#111; }
   .linea .n{ margin-left:6px; }
   .cabecera{ padding: 14px 18px; }
-  .cab-detalle, .barra-zoom{ padding: 12px 18px; }
+  .cab-detalle{ padding: 12px 18px; }
   .intro h1{ font-size:25px; }
   .intro p{ font-size:14px; }
   .buscador input{ width:120px; }
@@ -544,29 +479,21 @@ img{ max-width:100%; display:block; }
     <div class="escenario" id="escenario">
       <div class="lienzo" id="lienzo">
         <img id="foto" alt="" draggable="false">
-        <div id="puntos"></div>
       </div>
-      <div class="lupa" id="lupa"></div>
+      <p class="pista">Rueda o pellizco para acercar · arrastra para mover · doble clic para volver</p>
     </div>
 
     <aside class="panel">
       <h2 id="pNombre">—</h2>
       <p class="p-cat" id="pCategoria">—</p>
       <p class="p-precio" id="pPrecio">—</p>
-      <p class="ayuda">Toca los puntos sobre el zapato —o un nombre de la lista—
-        para ver de qué material es cada parte.</p>
+      <p class="ayuda">Toca un nombre de la lista para ver de qué material es
+        cada parte. La foto se acerca con la rueda o pellizcando, y se mueve
+        arrastrando.</p>
       <p class="seccion">Las piezas, una a una</p>
       <div id="pLista"></div>
       <div id="pFicha"></div>
     </aside>
-  </div>
-
-  <div class="barra-zoom">
-    <button class="zbtn" id="zOut" aria-label="Alejar">−</button>
-    <button class="zbtn" id="zIn" aria-label="Acercar">+</button>
-    <button class="zbtn" id="zReset">Reiniciar</button>
-    <button class="zbtn" id="zLupa">Lupa</button>
-    <span class="zoom-lectura" id="zLectura">1.0×</span>
   </div>
 </div>
 
@@ -1418,13 +1345,9 @@ function pintarRejilla(){
 const escenario = $("#escenario");
 const lienzo    = $("#lienzo");
 const foto      = $("#foto");
-const puntosEl  = $("#puntos");
-const lupaEl    = $("#lupa");
+const K_MIN = 1, K_MAX = 5;
 
-const K_MIN = 1, K_MAX = 5, LUPA_F = 2.6;
-
-const Z = { k:1, tx:0, ty:0, ancho:0, alto:0, lupa:false, arrastrando:false, sel:null };
-let puntos = [];
+const Z = { k:1, tx:0, ty:0, ancho:0, alto:0, arrastrando:false, sel:null };
 let arrastroReciente = false;
 let ultimo = null;
 
@@ -1450,14 +1373,7 @@ function limitar(){
 function aplicar(){
   limitar();
   lienzo.style.transform = `translate(${Z.tx}px, ${Z.ty}px) scale(${Z.k})`;
-  // Los puntos se contrarrestan para medir siempre lo mismo en pantalla
-  const inv = 1 / Z.k;
-  puntos.forEach(el => { el.style.transform = `translate(-50%,-50%) scale(${inv})`; });
-  $("#zLectura").textContent = Z.k.toFixed(1) + "×";
   escenario.classList.toggle("zoom", Z.k > 1.02);
-  $("#zOut").disabled = Z.k <= K_MIN + 0.001;
-  $("#zIn").disabled  = Z.k >= K_MAX - 0.001;
-  actualizarLupa();
 }
 
 function zoomEn(factor, px, py){
@@ -1477,36 +1393,7 @@ function relativo(e){
   return { x: e.clientX - r.left, y: e.clientY - r.top };
 }
 
-function actualizarLupa(){
-  if (!Z.lupa || !Z.producto){ lupaEl.classList.remove("activa"); return; }
-  const r = escenario.getBoundingClientRect();
-  const R = 95;                       // radio de la lupa en px
-  const ux = Math.min(Z.ancho, Math.max(0, (Z.px - Z.tx) / Z.k));
-  const uy = Math.min(Z.alto,  Math.max(0, (Z.py - Z.ty) / Z.k));
-  const escala = Z.k * LUPA_F;
-
-  lupaEl.style.left = Z.px + "px";
-  lupaEl.style.top  = Z.py + "px";
-  lupaEl.style.backgroundImage = `url("${Z.producto.img}")`;
-  lupaEl.style.backgroundSize  = `${Z.ancho * escala}px ${Z.alto * escala}px`;
-  lupaEl.style.backgroundPosition =
-    `${-(ux * escala) + R}px ${-(uy * escala) + R}px`;
-  const p = Z.sel ? Z.producto.piezas.find(q => q.id === Z.sel) : null;
-  lupaEl.dataset.label = (p ? p.label : "material") + " · " + LUPA_F.toFixed(1) + "×";
-  lupaEl.classList.add("activa");
-}
-
 /* ── Piezas ── */
-function pintarPuntos(){
-  const p = Z.producto;
-  puntosEl.innerHTML = p.piezas.map(q => `
-    <button class="punto" data-pieza="${q.id}" data-label="${q.label}"
-            aria-pressed="false" style="left:${(q.x / p.w * 100).toFixed(4)}%;
-            top:${(q.y / p.h * 100).toFixed(4)}%">${q.n}</button>`).join("");
-  puntos = [...puntosEl.querySelectorAll(".punto")];
-  aplicar();
-}
-
 function pintarLista(){
   $("#pLista").innerHTML = Z.producto.piezas.map(q => `
     <button class="pieza" data-pieza="${q.id}" aria-pressed="false">
@@ -1516,16 +1403,10 @@ function pintarLista(){
 
 function seleccionar(id){
   Z.sel = id;
-  puntos.forEach(el => {
-    const on = el.dataset.pieza === id;
-    el.setAttribute("aria-pressed", on);
-    el.classList.toggle("atenuado", !!id && !on);
-  });
   document.querySelectorAll(".pieza").forEach(b => {
     b.setAttribute("aria-pressed", b.dataset.pieza === id);
   });
   pintarFicha();
-  actualizarLupa();
 }
 
 function pintarFicha(){
@@ -1569,7 +1450,7 @@ function abrirDetalle(id, silencioso){
   const p = PRODUCTOS.find(x => x.id === id);
   if (!p) return;
   if (!silencioso) location.hash = "#/" + id;
-  Z.producto = p; Z.sel = null; Z.k = 1; Z.tx = 0; Z.ty = 0; Z.px = 0; Z.py = 0;
+  Z.producto = p; Z.sel = null; Z.k = 1; Z.tx = 0; Z.ty = 0;
 
   foto.src = p.img;
   foto.alt = p.nombre;
@@ -1583,7 +1464,7 @@ function abrirDetalle(id, silencioso){
   window.scrollTo(0,0);
 
   // Esperar a que la imagen tenga tamaño para calcular el lienzo
-  const listo = () => { ajustarLienzo(); pintarPuntos(); pintarFicha(); aplicar(); };
+  const listo = () => { ajustarLienzo(); pintarFicha(); aplicar(); };
   if (foto.complete) requestAnimationFrame(listo);
   else foto.addEventListener("load", () => requestAnimationFrame(listo), { once:true });
 }
@@ -1592,9 +1473,6 @@ function cerrarDetalle(silencioso){
   if (!silencioso) history.replaceState(null, "", location.pathname + location.search);
   $("#vistaDetalle").classList.add("oculto");
   $("#vistaCatalogo").classList.remove("oculto");
-  Z.lupa = false;
-  $("#zLupa").classList.remove("activo");
-  lupaEl.classList.remove("activa");
   Z.sel = null;
 }
 
@@ -1648,12 +1526,6 @@ $("#volver").addEventListener("click", () => cerrarDetalle());
 window.addEventListener("hashchange", sincronizarHash);
 
 /* Selección de pieza */
-puntosEl.addEventListener("click", (e) => {
-  const b = e.target.closest(".punto");
-  if (!b || arrastroReciente) return;
-  const id = b.dataset.pieza;
-  seleccionar(id === Z.sel ? null : id);
-});
 $("#pLista").addEventListener("click", (e) => {
   const b = e.target.closest(".pieza"); if (!b) return;
   const id = b.dataset.pieza;
@@ -1665,7 +1537,6 @@ $("#pLista").addEventListener("click", (e) => {
 escenario.addEventListener("wheel", (e) => {
   e.preventDefault();
   const p = relativo(e);
-  Z.px = p.x; Z.py = p.y;
   zoomEn(e.deltaY < 0 ? 1.15 : 1/1.15, p.x, p.y);
 }, { passive:false });
 
@@ -1681,8 +1552,6 @@ escenario.addEventListener("pointerdown", (e) => {
 
 escenario.addEventListener("pointermove", (e) => {
   const r = escenario.getBoundingClientRect();
-  Z.px = e.clientX - r.left;
-  Z.py = e.clientY - r.top;
 
   if (Z.arrastrando && ultimo){
     const dx = e.clientX - ultimo.x, dy = e.clientY - ultimo.y;
@@ -1690,8 +1559,6 @@ escenario.addEventListener("pointermove", (e) => {
     Z.tx = ultimo.tx + dx;
     Z.ty = ultimo.ty + dy;
     aplicar();
-  } else {
-    actualizarLupa();
   }
 });
 
@@ -1704,33 +1571,16 @@ function soltar(e){
 }
 escenario.addEventListener("pointerup", soltar);
 escenario.addEventListener("pointercancel", soltar);
-escenario.addEventListener("pointerleave", () => lupaEl.classList.remove("activa"));
 escenario.addEventListener("dblclick", () => reiniciarZoom());
 
 /* Botones */
 function reiniciarZoom(){ Z.k = 1; Z.tx = 0; Z.ty = 0; ajustarLienzo(); aplicar(); }
-$("#zIn").addEventListener("click", () => {
-  const r = escenario.getBoundingClientRect();
-  zoomEn(1.4, r.width/2, r.height/2);
-});
-$("#zOut").addEventListener("click", () => {
-  const r = escenario.getBoundingClientRect();
-  zoomEn(1/1.4, r.width/2, r.height/2);
-});
-$("#zReset").addEventListener("click", () => { seleccionar(null); reiniciarZoom(); });
-$("#zLupa").addEventListener("click", (e) => {
-  Z.lupa = !Z.lupa;
-  e.currentTarget.classList.toggle("activo", Z.lupa);
-  actualizarLupa();
-});
-
 /* Teclado */
 document.addEventListener("keydown", (e) => {
   if ($("#vistaDetalle").classList.contains("oculto")) return;
   if (e.target.matches("input, select, textarea")) return;
   const k = e.key.toLowerCase();
   if (k === "escape"){ cerrarDetalle(); return; }
-  if (k === "l"){ $("#zLupa").click(); return; }
   if (k === "0"){ seleccionar(null); reiniciarZoom(); return; }
   const n = parseInt(k, 10);
   if (n >= 1 && n <= 9){
