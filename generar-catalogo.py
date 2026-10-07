@@ -327,19 +327,28 @@ class Hoja:
         if not s:
             return
         f = "F2" if negrita else "F1"
+        # El ancho para alinear tiene que contar el espaciado extra, si no
+        # el texto espaciado queda descentrado.
+        w = ancho(s, negrita, tam) + esp * max(0, len(s) - 1)
         if izq == "centro":
-            x -= ancho(s, negrita, tam) / 2
+            x -= w / 2
         elif izq == "derecha":
-            x -= ancho(s, negrita, tam)
+            x -= w
         self.color(color)
         self.ops.append("BT")
         self.ops.append("/%s %.2f Tf" % (f, tam))
-        self.ops.append("%.2f %.2f Td" % (x, self._y(y)))
         if esp:
+            # `Td` desplaza respecto al inicio de la LÍNEA, no respecto al
+            # último glifo: el avance que deja `Tj` se perdía y las letras se
+            # montaban unas encima de otras. Con `Tm` se fija la posición
+            # absoluta de cada glifo y el avance se calcula a mano.
+            xx = x
             for ch in s:
+                self.ops.append("1 0 0 1 %.2f %.2f Tm" % (xx, self._y(y)))
                 self.ops.append("(%s) Tj" % _esc(ch))
-                self.ops.append("%.2f 0 Td" % esp)
+                xx += ancho(ch, negrita, tam) + esp
         else:
+            self.ops.append("%.2f %.2f Td" % (x, self._y(y)))
             self.ops.append("(%s) Tj" % _esc(s))
         self.ops.append("ET")
 
@@ -729,50 +738,27 @@ def agrupar(productos):
 
 
 def portada(cat, productos, minis):
-    """Portada: marca, título y una tira con un zapato de cada línea.
+    """Portada: solo la marca, centrada y con mucho aire.
 
-    Va antes del índice para que el catálogo se abra con algo que se vea, en
-    lugar de entrar directamente a una lista.
+    Antes llevaba una tira con un zapato de cada línea y el recuento de
+    modelos, pero competía con el índice que va justo detrás. Con la marca
+    sola el catálogo se abre con una pausa y el índice hace su trabajo.
     """
     h = cat.nueva("Portada")
-    grupos = agrupar(productos)
-    h.texto(MARGEN, 62, "M K", 15, True, NEGRO, esp=3.4)
-    h.linea(MARGEN, 74, PW - MARGEN, 74, 1.1, NEGRO)
+    CW, CH = PW, PH                      # A4 apaisado
 
-    h.texto(MARGEN, 168, "Colección", 46, True, NEGRO)
-    h.texto(MARGEN, 214, "%d modelos en %d líneas" % (len(productos), len(grupos)),
-            12, False, GRIS)
-    h.linea(MARGEN, 240, PW - MARGEN, 240, 0.6, CLARO)
+    # La marca, centrada a mano: `texto` centra por el ancho de los glifos,
+    # que no cuenta el espaciado extra que se le pasa.
+    h.texto(CW / 2, CH / 2 - 20, "MK", 148, True, NEGRO, izq="centro", esp=16)
 
-    # Tira de zapatos: se toma uno de cada línea y se repite la ronda hasta
-    # seis, para que todas las líneas estén representadas.
-    eleccion = []
-    for ronda in range(3):
-        for _, ps in grupos:
-            if ronda < len(ps) and len(eleccion) < 6:
-                eleccion.append(ps[ronda])
-    n = len(eleccion)
-    slot = (PW - 2 * MARGEN) / n
-    caja_w, caja_h = slot - 14, 104.0
-    for k, q in enumerate(eleccion):
-        nom, aw, ah = minis[q["id"]][:3]
-        w, hh = encajar(aw, ah, caja_w, caja_h)
-        x = MARGEN + k * slot + (slot - w) / 2
-        h.imagen(nom, x, 268 + (caja_h - hh) / 2, w, hh)
+    # Un filete fino debajo, a juego con el ancho de la marca
+    filete = 92.0
+    h.linea((CW - filete) / 2, CH / 2 + 22, (CW + filete) / 2, CH / 2 + 22,
+            0.8, NEGRO)
 
-    h.linea(MARGEN, 404, PW - MARGEN, 404, 0.5, CLARO)
-
-    # Las líneas, repartidas a lo ancho
-    slot2 = (PW - 2 * MARGEN) / len(grupos)
-    for k, (tipo, ps) in enumerate(grupos):
-        x = MARGEN + k * slot2
-        h.texto(x, 434, tipo.upper(), 9.5, True, NEGRO)
-        h.texto(x, 452, "%d modelo%s" % (len(ps), "s" if len(ps) != 1 else ""),
-                8.5, False, GRIS)
-
-    h.texto(MARGEN, h.pie_y - 22,
-            "Precios en soles. Materiales y acabados sujetos a variación de lote.",
-            8, False, GRIS)
+    # Y el pie de portada, discreto y espaciado
+    pie = "C A T Á L O G O"
+    h.texto(CW / 2, CH / 2 + 58, pie, 8.5, False, GRIS, izq="centro")
     return h
 
 
