@@ -61,34 +61,39 @@ img{ max-width:100%; display:block; }
 .buscador svg{ width:15px; height:15px; flex:none; }
 
 /* ── Introducción ── */
-.catalogo{ max-width:1200px; margin:0 auto; padding:40px 34px 90px; }
+.catalogo{
+  max-width:1340px; margin:0 auto; padding:34px 34px 90px;
+  display:grid; grid-template-columns:214px minmax(0,1fr); gap:0 46px;
+  align-items:start;
+}
 .intro h1{ font-size:31px; font-weight:700; letter-spacing:-.015em; margin:0 0 9px; }
 .intro p{ color:#6d6d6d; font-size:14.5px; line-height:1.55; margin:0; max-width:64ch; }
 
-/* ── Líneas de calzado, en pastillas ──
-   Sustituyen a los tres paneles de filtros: para quien no conoce el
-   producto, elegir "Vestir" de una lista visible es más directo que
-   combinar casillas de género, categoría y etiqueta. */
-.chips{ display:flex; flex-wrap:wrap; gap:9px; margin:30px 0 4px; }
-.chip{
-  font:inherit; font-size:13.5px; cursor:pointer; white-space:nowrap;
-  padding:9px 17px; border-radius:999px;
-  border:1px solid #e0e0e0; background:#fff; color:#3a3a3a;
-  transition:border-color .14s, background .14s, color .14s;
+/* ── Navegación por líneas, en la columna izquierda ──
+   Antes eran tres paneles de filtros (género, categoría y etiqueta) que
+   obligaban a combinar casillas para llegar a algo que aquí se elige de un
+   toque. Y ahora va en una columna propia, así que no le roba alto a la
+   rejilla. */
+.lineas{ position:sticky; top:98px; padding-top:4px; }
+.lineas-titulo{
+  font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:#9a9a9a; margin:0 0 14px;
 }
-.chip:hover{ border-color:#111; color:#111; }
-.chip[aria-pressed="true"]{ background:#111; border-color:#111; color:#fff; }
-.chip .n{ opacity:.45; margin-left:7px; font-size:12px; }
-.chip[aria-pressed="true"] .n{ opacity:.65; }
-/* ══ CATÁLOGO ══════════════════════════════════════════════════════ */
+.linea{
+  display:flex; align-items:baseline; gap:8px; width:100%;
+  font:inherit; font-size:14px; text-align:left; cursor:pointer;
+  padding:9px 12px; margin-bottom:2px; border:0; border-radius:9px;
+  background:none; color:#3a3a3a; transition:background .14s, color .14s;
+}
+.linea:hover{ background:#f4f4f4; color:#111; }
+.linea[aria-pressed="true"]{ background:#111; color:#fff; font-weight:600; }
+.linea .n{
+  margin-left:auto; font-size:12px; opacity:.45;
+  font-variant-numeric:tabular-nums;
+}
+.linea[aria-pressed="true"] .n{ opacity:.62; }
 
-.catalogo{
-  display:grid;
-  grid-template-columns: 232px minmax(0, 1fr);
-  gap: 0 34px;
-  padding: 22px 44px 70px;
-  align-items:start;
-}
+.resultados{ min-width:0; }
 
 /* ── Resultados ── */
 .cab-resultados{
@@ -105,8 +110,8 @@ img{ max-width:100%; display:block; }
 
 /* ── Rejilla de producto ── */
 .rejilla{
-  display:grid; grid-template-columns:repeat(4, 1fr);
-  gap:30px 22px; margin-top:26px;
+  display:grid; grid-template-columns:repeat(3, 1fr);
+  gap:36px 28px; margin-top:24px;
 }
 .tarjeta{ display:flex; flex-direction:column; }
 .tarjeta-foto{
@@ -437,14 +442,26 @@ img{ max-width:100%; display:block; }
 /* ══ RESPONSIVE ════════════════════════════════════════════════════ */
 
 @media (max-width: 1080px){
-  .catalogo{ padding: 34px 28px 80px; }
+  .catalogo{ padding: 30px 28px 80px; grid-template-columns:186px minmax(0,1fr); gap:0 30px; }
   .cabecera, .cab-detalle, .barra-zoom{ padding-left:28px; padding-right:28px; }
-  .rejilla{ grid-template-columns: repeat(3, 1fr); }
+  .rejilla{ grid-template-columns: repeat(2, 1fr); }
   .detalle{ grid-template-columns: minmax(0,1fr) 320px; }
 }
 
 @media (max-width: 860px){
-  .catalogo{ padding: 26px 18px 60px; }
+  /* En móvil la columna de líneas pasa a ser una fila horizontal arriba */
+  .catalogo{ padding: 22px 18px 60px; grid-template-columns:1fr; gap:0; }
+  .lineas{
+    position:static; display:flex; gap:8px; overflow-x:auto;
+    padding:0 0 6px; margin-bottom:22px; -webkit-overflow-scrolling:touch;
+  }
+  .lineas-titulo{ display:none; }
+  .linea{
+    width:auto; white-space:nowrap; margin:0;
+    border:1px solid #e0e0e0; border-radius:999px; padding:8px 15px;
+  }
+  .linea[aria-pressed="true"]{ border-color:#111; }
+  .linea .n{ margin-left:6px; }
   .cabecera{ padding: 14px 18px; }
   .cab-detalle, .barra-zoom{ padding: 12px 18px; }
   .intro h1{ font-size:25px; }
@@ -462,9 +479,7 @@ img{ max-width:100%; display:block; }
 
 @media (max-width: 520px){
   .buscador{ display:none; }
-  .chips{ gap:7px; margin-top:22px; }
-  .chip{ padding:8px 14px; font-size:13px; }
-  .rejilla{ gap: 22px 12px; }
+  .rejilla{ gap: 24px 12px; }
   .intro h1{ font-size:22px; }
 }
 
@@ -486,12 +501,13 @@ img{ max-width:100%; display:block; }
   </header>
 
   <main class="catalogo">
+    <aside class="lineas" id="chips" aria-label="Líneas de calzado"></aside>
+
+    <section class="resultados">
     <div class="intro">
       <h1 id="introTitulo">Todo el calzado</h1>
       <p id="introTexto"></p>
     </div>
-
-    <nav class="chips" id="chips" aria-label="Líneas de calzado"></nav>
 
     <div class="cab-resultados">
       <p id="nResultados"></p>
@@ -507,6 +523,7 @@ img{ max-width:100%; display:block; }
 
     <div class="rejilla" id="rejilla"></div>
     <div class="sin-resultados oculto" id="sinResultados"></div>
+    </section>
   </main>
 </div>
 
@@ -1358,10 +1375,11 @@ function cuantosEn(linea){
    que aquí se elige de un toque. */
 function pintarChips(){
   const items = [["todo", "Todo el calzado"]].concat(LINEAS.map(l => [l, l]));
-  $("#chips").innerHTML = items.map(([v, et]) => `
-    <button class="chip" data-linea="${v}" aria-pressed="${E.linea === v}">
-      ${et}<span class="n">${cuantosEn(v)}</span>
-    </button>`).join("");
+  $("#chips").innerHTML = '<p class="lineas-titulo">Líneas</p>' +
+    items.map(([v, et]) => `
+      <button class="linea" data-linea="${v}" aria-pressed="${E.linea === v}">
+        ${et}<span class="n">${cuantosEn(v)}</span>
+      </button>`).join("");
 }
 
 function pintarRejilla(){
@@ -1594,7 +1612,7 @@ function sincronizarHash(){
 
 /* Pastillas de línea, y abrir la ficha de un modelo */
 document.addEventListener("click", (e) => {
-  const chip = e.target.closest(".chip");
+  const chip = e.target.closest(".linea");
   if (chip){
     E.linea = chip.dataset.linea;
     pintarChips();

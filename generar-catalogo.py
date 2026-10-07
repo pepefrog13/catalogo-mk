@@ -523,7 +523,8 @@ def fondo_ya_es_blanco(im, umbral=250.0):
     return float(np.median(borde)) >= umbral
 
 
-def procesar_fondo(im, escala=0.35, pluma=1.0, margen=4.0, fuerza_sombra=0.35):
+def procesar_fondo(im, escala=0.35, pluma=1.0, margen=4.0, fuerza_sombra=0.35,
+                   blanquear=True):
     """Lleva el fondo de estudio a blanco y añade una sombra de contacto.
 
     El fondo es un degradado gris. Se detecta por luminancia y saturación y
@@ -577,7 +578,11 @@ def procesar_fondo(im, escala=0.35, pluma=1.0, margen=4.0, fuerza_sombra=0.35):
     al = al.resize((w, h), Image.BILINEAR).filter(ImageFilter.GaussianBlur(pluma))
     alpha = np.asarray(al).astype(np.float32)[..., None] / 255.0
 
-    out = a * (1 - alpha) + 255.0 * alpha
+    # Con `blanquear=False` se respeta el fondo original y solo se añade la
+    # sombra. Es lo que necesita el 001: su foto ya venía sobre blanco puro y
+    # blanquearla le comía la mediasuela. Antes se saltaba el proceso entero,
+    # y por eso era la única sin sombra de contacto.
+    out = a * (1 - alpha) + 255.0 * alpha if blanquear else a.copy()
 
     # Sombra de contacto: la silueta desplazada hacia abajo y difusa,
     # aplicada solo FUERA del zapato para no ensuciar el material.
@@ -836,6 +841,10 @@ def preparar(pdf, ruta, clave, temporales, Image, fondo=True):
     """
     im = Image.open(ruta).convert("RGB")
     caja = (0.0, 0.0, 1.0, 1.0)
+    # Las imágenes de `img/` ya vienen limpias de `preparar-imagenes.py`: fondo
+    # blanco y sombra de contacto. Si se procesaran otra vez, la sombra se
+    # aplicaría dos veces. El corte por fondo blanco las deja pasar tal cual y
+    # sigue sirviendo de red si alguien deja una foto cruda en `img/`.
     if fondo and BLANQUEAR_FONDO and not fondo_ya_es_blanco(im):
         im, caja = procesar_fondo(im)
     if max(im.size) > LADO_MAX:

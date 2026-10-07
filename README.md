@@ -32,6 +32,7 @@ zapatillas-mk/
 ├── index.html                     ← web (catálogo + ficha interactiva)
 ├── catalogo.pdf                   ← catálogo para enviar o imprimir
 ├── generar-catalogo.py            ← regenera el PDF desde index.html
+├── preparar-imagenes.py           ← deja las fotos limpias en img/
 ├── guia-cuidado-gamuza.pdf        ← guía de cuidado del ante y la gamuza
 ├── generar-guia.py                ← regenera la guía (reutiliza el motor)
 ├── verificacion-hotspots.png      ← comprobación de los puntos
