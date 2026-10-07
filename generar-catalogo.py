@@ -464,6 +464,26 @@ def _umbrales(a, m=24):
             float(np.percentile(sat, 99)))
 
 
+def _reconstruir(semilla, permitido):
+    """Inundación vectorizada: crece desde `semilla` sin salir de `permitido`.
+
+    Hace lo mismo que un relleno por inundación, pero a base de desplazar la
+    máscara con numpy en vez de recorrer píxel a píxel. En una foto de 2400 px
+    la diferencia es de segundos a milisegundos.
+    """
+    s = semilla & permitido
+    while True:
+        d = s.copy()
+        d[1:, :] |= s[:-1, :]
+        d[:-1, :] |= s[1:, :]
+        d[:, 1:] |= s[:, :-1]
+        d[:, :-1] |= s[:, 1:]
+        d &= permitido
+        if np.array_equal(d, s):
+            return s
+        s = d
+
+
 def fondo_ya_es_blanco(im, umbral=250.0):
     """¿El fondo ya es blanco?
 
@@ -499,7 +519,11 @@ def procesar_fondo(im, escala=0.35, pluma=1.0, margen=4.0, fuerza_sombra=0.35):
     a = np.asarray(im).astype(np.float32)
     hi, lo, sb = _umbrales(a)
     tmax = hi + margen
-    tmin = max(0.0, lo - margen * 2)
+    # Margen ajustado por abajo. Con `margen * 2` el corte quedaba en 203 y la
+    # mediasuela del 007, que va de 190 a 207, entraba a medias en la máscara
+    # de fondo: la mitad clara se blanqueaba y la oscura no, y salían manchas
+    # grises. El fondo más oscuro de estas fotos está en 211.
+    tmin = max(0.0, lo - margen * 0.5)
     tsat = max(sb + margen * 2, 10.0)
     lum = a.mean(axis=2); sat = a.max(axis=2) - a.min(axis=2)
     m = (lum > tmin) & (lum < tmax) & (sat < tsat)
@@ -508,10 +532,26 @@ def procesar_fondo(im, escala=0.35, pluma=1.0, margen=4.0, fuerza_sombra=0.35):
     pw, ph = max(1, int(w * escala)), max(1, int(h * escala))
     mi = Image.fromarray((m * 255).astype(np.uint8), "L").resize((pw, ph), Image.BILINEAR)
     mi = mi.point(lambda v: 255 if v > 127 else 0)
-    for semilla in [(0, 0), (pw - 1, 0), (0, ph - 1), (pw - 1, ph - 1)]:
-        if mi.getpixel(semilla) == 255:
-            ImageDraw.floodfill(mi, semilla, 128, thresh=0)
-    al = Image.fromarray(((np.asarray(mi) == 128) * 255).astype(np.uint8), "L")
+    permitido = np.asarray(mi) > 0
+
+    # Barrera de bordes: el relleno no cruza un cambio fuerte de luminancia.
+    # Es la segunda red de seguridad, para cuando el color de la suela y el
+    # del fondo se solapan: el borde de la suela sí es un cambio fuerte.
+    gris = np.asarray(im.convert("L").resize((pw, ph), Image.BILINEAR)).astype(np.float32)
+    gy, gx = np.gradient(gris)
+    mag = np.hypot(gx, gy)
+    mm = 24
+    borde_marco = np.concatenate([mag[:mm].ravel(), mag[-mm:].ravel(),
+                                  mag[:, :mm].ravel(), mag[:, -mm:].ravel()])
+    tb = max(2.5, float(np.percentile(borde_marco, 99.5)) * 2.5)
+    permitido &= mag <= tb
+
+    semilla = np.zeros_like(permitido)
+    semilla[0, :] |= permitido[0, :]
+    semilla[-1, :] |= permitido[-1, :]
+    semilla[:, 0] |= permitido[:, 0]
+    semilla[:, -1] |= permitido[:, -1]
+    al = Image.fromarray((_reconstruir(semilla, permitido) * 255).astype(np.uint8), "L")
     al = al.resize((w, h), Image.BILINEAR).filter(ImageFilter.GaussianBlur(pluma))
     alpha = np.asarray(al).astype(np.float32)[..., None] / 255.0
 
