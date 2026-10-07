@@ -38,75 +38,48 @@ img{ max-width:100%; display:block; }
 .oculto{ display:none !important; }
 
 /* ══ CABECERA ══════════════════════════════════════════════════════ */
-
-.topbar{
-  background:#111; color:#fff;
-  font-size: 12px;
-  padding: 7px 44px;
-  display:flex; justify-content:flex-end; gap:22px;
-}
-.topbar a{ color:#fff; text-decoration:none; opacity:.92; }
-.topbar a:hover{ opacity:.65; }
-.topbar .sep{ opacity:.35; }
-
 .cabecera{
   display:flex; align-items:center; gap:26px;
-  padding: 14px 44px 16px;
-  background:#fff;
-  position: sticky; top:0; z-index:30;
-  border-bottom: 1px solid transparent;
+  padding:22px 34px; border-bottom:1px solid #e8e8e8;
+  position:sticky; top:0; background:#fff; z-index:30;
 }
 .marca{
-  font-size: 25px; font-weight: 900; letter-spacing:-.06em;
-  text-decoration:none; color:var(--tinta);
-  display:flex; align-items:center; gap:2px;
+  font-weight:700; font-size:19px; letter-spacing:.44em;
+  color:#111; text-decoration:none; white-space:nowrap;
 }
-.marca svg{ width:26px; height:26px; }
-.menu{
-  display:flex; gap:24px; list-style:none; margin:0 auto; padding:0;
-}
-.menu a{
-  color:var(--tinta); text-decoration:none; font-size:15px; font-weight:500;
-  padding-bottom:2px; border-bottom:2px solid transparent;
-}
-.menu a:hover{ border-bottom-color: var(--tinta); }
-.menu a[aria-current="page"]{ border-bottom-color: var(--tinta); font-weight:600; }
-
-.acciones{ display:flex; align-items:center; gap:12px; }
 .buscador{
-  display:flex; align-items:center; gap:8px;
-  background:#f5f5f5; border-radius:999px;
-  padding: 9px 16px; width: 190px;
-  transition: background .15s, box-shadow .15s;
+  margin-left:auto; display:flex; align-items:center; gap:8px;
+  border:1px solid #e0e0e0; border-radius:999px; padding:7px 15px;
+  background:#fafafa; transition:border-color .16s, background .16s;
 }
-.buscador:focus-within{ background:#fff; box-shadow: inset 0 0 0 1.5px var(--tinta); }
+.buscador:focus-within{ border-color:#111; background:#fff; }
 .buscador input{
-  border:0; background:transparent; outline:none; width:100%;
-  font-family:inherit; font-size:14px; color:var(--tinta);
+  border:0; background:none; outline:none; font:inherit; font-size:14px;
+  width:170px; color:#111;
 }
-.buscador svg{ width:17px; height:17px; flex:0 0 auto; }
-.icono{
-  width:38px; height:38px; border-radius:50%;
-  border:0; background:#f5f5f5;
-  display:grid; place-items:center;
-}
-.icono:hover{ background:#e9e9e9; }
-.icono svg{ width:19px; height:19px; }
+.buscador input::placeholder{ color:#9a9a9a; }
+.buscador svg{ width:15px; height:15px; flex:none; }
 
-.promo{
-  background:#f5f5f5;
-  display:flex; align-items:center; justify-content:center;
-  gap:18px; padding: 9px 44px;
-  font-size:13px; position:relative;
-}
-.promo b{ font-weight:700; }
-.promo a{ color:var(--tinta); }
-.promo .flecha{
-  background:none; border:0; font-size:16px; color:var(--tinta-2);
-  padding:2px 8px;
-}
-.promo .flecha:hover{ color:var(--tinta); }
+/* ── Introducción ── */
+.catalogo{ max-width:1200px; margin:0 auto; padding:40px 34px 90px; }
+.intro h1{ font-size:31px; font-weight:700; letter-spacing:-.015em; margin:0 0 9px; }
+.intro p{ color:#6d6d6d; font-size:14.5px; line-height:1.55; margin:0; max-width:64ch; }
 
+/* ── Líneas de calzado, en pastillas ──
+   Sustituyen a los tres paneles de filtros: para quien no conoce el
+   producto, elegir "Vestir" de una lista visible es más directo que
+   combinar casillas de género, categoría y etiqueta. */
+.chips{ display:flex; flex-wrap:wrap; gap:9px; margin:30px 0 4px; }
+.chip{
+  font:inherit; font-size:13.5px; cursor:pointer; white-space:nowrap;
+  padding:9px 17px; border-radius:999px;
+  border:1px solid #e0e0e0; background:#fff; color:#3a3a3a;
+  transition:border-color .14s, background .14s, color .14s;
+}
+.chip:hover{ border-color:#111; color:#111; }
+.chip[aria-pressed="true"]{ background:#111; border-color:#111; color:#fff; }
+.chip .n{ opacity:.45; margin-left:7px; font-size:12px; }
+.chip[aria-pressed="true"] .n{ opacity:.65; }
 /* ══ CATÁLOGO ══════════════════════════════════════════════════════ */
 
 .catalogo{
@@ -117,101 +90,48 @@ img{ max-width:100%; display:block; }
   align-items:start;
 }
 
-/* ── Filtros ── */
-.filtros{ position: sticky; top: 82px; }
-.grupo{ border-bottom: 1px solid var(--linea); }
-.grupo-cab{
-  width:100%; background:none; border:0;
-  display:flex; align-items:center; justify-content:space-between;
-  padding: 15px 2px; font-size:15px; font-weight:500; color:var(--tinta);
-  text-align:left;
-}
-.grupo-cab:hover{ color:var(--gris); }
-.chev{ transition: transform .18s; display:inline-block; font-size:12px; color:var(--gris); }
-.grupo[data-abierto="true"] .chev{ transform: rotate(180deg); }
-.grupo-cuerpo{
-  display:none; padding: 2px 2px 16px;
-}
-.grupo[data-abierto="true"] .grupo-cuerpo{ display:block; }
-.opcion{
-  display:flex; align-items:center; gap:9px;
-  padding: 6px 0; font-size:14px; color:var(--tinta-2); cursor:pointer;
-}
-.opcion:hover{ color:var(--tinta); }
-.opcion input{ accent-color: var(--tinta); width:15px; height:15px; }
-.opcion .cuenta{ margin-left:auto; font-size:12px; color:var(--gris-claro); }
-
-.filtros-pie{ padding-top:18px; }
-.btn-texto{
-  background:none; border:0; padding:0;
-  font-size:13px; color:var(--gris); text-decoration:underline;
-}
-.btn-texto:hover{ color:var(--tinta); }
-
 /* ── Resultados ── */
-.migas{ font-size:13px; color:var(--gris); margin: 0 0 6px; }
 .cab-resultados{
-  display:flex; align-items:flex-end; justify-content:space-between;
-  gap:20px; margin-bottom: 18px;
+  display:flex; align-items:baseline; gap:16px;
+  margin-top:26px; padding-top:18px; border-top:1px solid #eee;
 }
-.cab-resultados h1{
-  font-size: 23px; font-weight: 600; letter-spacing:-.01em; margin:0;
-}
-.herramientas{ display:flex; align-items:center; gap:20px; font-size:14px; }
-.herramientas button{
-  background:none; border:0; color:var(--tinta); font-size:14px;
-  display:flex; align-items:center; gap:7px; padding:4px 0;
-}
-.herramientas button:hover{ color:var(--gris); }
+.cab-resultados p{ color:#6d6d6d; font-size:13.5px; margin:0; }
+.herramientas{ margin-left:auto; }
 .herramientas select{
-  font-family:inherit; font-size:14px; color:var(--tinta);
-  border:0; background:none; padding:4px 0; cursor:pointer; outline:none;
+  font:inherit; font-size:13.5px; padding:8px 12px; color:#3a3a3a;
+  border:1px solid #e0e0e0; border-radius:9px; background:#fff; cursor:pointer;
 }
+.herramientas select:hover{ border-color:#111; }
 
 /* ── Rejilla de producto ── */
 .rejilla{
-  display:grid;
-  grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
-  gap: 30px 14px;
+  display:grid; grid-template-columns:repeat(4, 1fr);
+  gap:30px 22px; margin-top:26px;
 }
-.tarjeta{ position:relative; }
+.tarjeta{ display:flex; flex-direction:column; }
 .tarjeta-foto{
-  position:relative;
-  background:#fff; border-radius:2px;
-  aspect-ratio: 1448 / 1086;
-  overflow:hidden;
-  cursor:pointer;
+  display:grid; place-items:center; padding:12px;
+  aspect-ratio:4 / 3; background:#fff;
+  border:1px solid #ececec; border-radius:13px; overflow:hidden;
+  cursor:pointer; transition:border-color .16s, box-shadow .16s;
 }
-.tarjeta-foto img{
-  width:100%; height:100%; object-fit:contain;
-  transition: transform .35s ease;
-}
-.tarjeta-foto:hover img{ transform: scale(1.035); }
-.tarjeta-fav{
-  position:absolute; top:12px; right:12px; z-index:2;
-  width:34px; height:34px; border-radius:50%;
-  border:0; background:rgba(255,255,255,.92);
-  display:grid; place-items:center;
-  box-shadow: 0 1px 3px rgba(0,0,0,.12);
-}
-.tarjeta-fav svg{ width:17px; height:17px; }
-.tarjeta-fav[aria-pressed="true"] svg{ fill:#111; }
-.tarjeta-info{ padding: 14px 2px 0; }
+.tarjeta-foto:hover{ border-color:#111; box-shadow:0 3px 16px rgba(0,0,0,.06); }
+.tarjeta-foto img{ width:100%; height:100%; object-fit:contain; display:block; }
+.tarjeta-info{ padding:13px 2px 0; }
 .insignia{
-  color: var(--nuevo); font-size:14px; font-weight:600; display:block;
-  margin-bottom:3px;
+  display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.07em;
+  text-transform:uppercase; color:#111;
+  border:1px solid #111; border-radius:999px; padding:2px 9px; margin-bottom:8px;
 }
-.tarjeta-info h3{
-  font-size:15px; font-weight:600; margin:0 0 3px; letter-spacing:-.01em;
+.tarjeta-info h3{ font-size:14.5px; font-weight:700; margin:0 0 3px; color:#111; }
+.tarjeta-info .cat{ font-size:12.5px; color:#6d6d6d; margin:0 0 9px; }
+.tarjeta-info .precio{ font-size:15px; font-weight:700; margin:0; color:#111; }
+.tarjeta-ver{
+  margin-top:9px; font-size:12.5px; font-weight:600; color:#111;
+  display:inline-flex; align-items:center; gap:6px;
 }
-.tarjeta-info .cat{ font-size:14px; color:var(--gris); margin:0 0 3px; }
-.tarjeta-info .colores{ font-size:14px; color:var(--gris); margin:0 0 12px; }
-.tarjeta-info .precio{ font-size:15px; font-weight:600; margin:0; }
-
-.sin-resultados{
-  border:1px dashed var(--linea); border-radius:8px;
-  padding: 60px 24px; text-align:center; color:var(--gris); font-size:14px;
-}
+.tarjeta-foto:hover + .tarjeta-info .tarjeta-ver{ text-decoration:underline; }
+.sin-resultados{ padding:60px 0; color:#6d6d6d; font-size:14.5px; text-align:center; }
 
 /* ══ DETALLE ═══════════════════════════════════════════════════════ */
 
@@ -310,6 +230,10 @@ img{ max-width:100%; display:block; }
 }
 
 /* ── Panel ── */
+.ayuda{
+  font-size:13px; line-height:1.55; color:#6d6d6d;
+  background:#f7f7f7; border-radius:11px; padding:12px 15px; margin:18px 0 24px;
+}
 .panel{ padding: 26px 30px 40px; overflow-y:auto; max-height: calc(100vh - 190px); }
 .panel h2{ font-size:22px; font-weight:600; margin:0 0 4px; letter-spacing:-.01em; }
 .panel .p-cat{ font-size:14px; color:var(--gris); margin:0 0 14px; }
@@ -513,31 +437,37 @@ img{ max-width:100%; display:block; }
 /* ══ RESPONSIVE ════════════════════════════════════════════════════ */
 
 @media (max-width: 1080px){
-  .catalogo{ grid-template-columns: 200px minmax(0,1fr); gap: 0 24px; padding: 18px 28px 60px; }
-  .topbar, .cabecera, .promo, .cab-detalle, .barra-zoom{ padding-left:28px; padding-right:28px; }
-  .menu{ gap:16px; }
-  .menu a{ font-size:14px; }
-  .buscador{ width:150px; }
+  .catalogo{ padding: 34px 28px 80px; }
+  .cabecera, .cab-detalle, .barra-zoom{ padding-left:28px; padding-right:28px; }
+  .rejilla{ grid-template-columns: repeat(3, 1fr); }
   .detalle{ grid-template-columns: minmax(0,1fr) 320px; }
 }
+
 @media (max-width: 860px){
-  .menu, .buscador{ display:none; }
-  .catalogo{ grid-template-columns: 1fr; padding: 16px 18px 50px; }
-  .filtros{ position:static; display:none; }
-  .filtros.abierto{ display:block; }
-  .topbar{ padding: 6px 18px; font-size:11px; gap:14px; }
-  .cabecera, .cab-detalle{ padding: 12px 18px; }
-  .promo{ padding: 8px 18px; font-size:12px; }
-  .barra-zoom{ padding: 11px 18px; }
+  .catalogo{ padding: 26px 18px 60px; }
+  .cabecera{ padding: 14px 18px; }
+  .cab-detalle, .barra-zoom{ padding: 12px 18px; }
+  .intro h1{ font-size:25px; }
+  .intro p{ font-size:14px; }
+  .buscador input{ width:120px; }
+  .rejilla{ grid-template-columns: repeat(2, 1fr); gap: 26px 14px; }
   .detalle{ grid-template-columns: 1fr; }
   .escenario{
-    height: 56vw; min-height:260px; max-height:440px;
+    height: 62vw; min-height:250px; max-height:420px;
     border-right:0; border-bottom:1px solid var(--linea);
   }
   .panel{ max-height:none; padding: 22px 18px 34px; }
-  .rejilla{ grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 22px 12px; }
-  .cab-resultados h1{ font-size:19px; }
+  .cab-resultados{ flex-wrap:wrap; row-gap:10px; }
 }
+
+@media (max-width: 520px){
+  .buscador{ display:none; }
+  .chips{ gap:7px; margin-top:22px; }
+  .chip{ padding:8px 14px; font-size:13px; }
+  .rejilla{ gap: 22px 12px; }
+  .intro h1{ font-size:22px; }
+}
+
 </style>
 </head>
 <body>
@@ -545,85 +475,38 @@ img{ max-width:100%; display:block; }
 <!-- ══════════════════ VISTA 1 · CATÁLOGO ══════════════════ -->
 <div id="vistaCatalogo">
 
-  <div class="topbar">
-    <a href="#">Buscar tienda</a><span class="sep">|</span>
-    <a href="#">Ayuda</a><span class="sep">|</span>
-    <a href="#">Únete</a><span class="sep">|</span>
-    <a href="#">Iniciar sesión</a>
-  </div>
-
   <header class="cabecera">
-    <a class="marca" href="#">M K</a>
-    <ul class="menu">
-      <li><a href="#" aria-current="page">Lo nuevo</a></li>
-      <li><a href="#">Hombre</a></li>
-      <li><a href="#">Mujer</a></li>
-      <li><a href="#">Niños</a></li>
-      <li><a href="#">Descuentos</a></li>
-      <li><a href="#">Deportes</a></li>
-      <li><a href="#">Strength</a></li>
-    </ul>
-    <div class="acciones">
-      <div class="buscador">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"
-             stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
-        <input id="buscador" type="search" placeholder="Buscar" aria-label="Buscar">
-      </div>
-      <button class="icono" aria-label="Favoritos">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.9">
-          <path d="M12 20.5S3.5 15 3.5 9.4A4.9 4.9 0 0 1 12 6a4.9 4.9 0 0 1 8.5 3.4C20.5 15 12 20.5 12 20.5z"/>
-        </svg>
-      </button>
-      <button class="icono" aria-label="Bolsa">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.9">
-          <path d="M5 8h14l-1.2 12.2H6.2L5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>
-        </svg>
-      </button>
+    <a class="marca" href="#" id="irInicio" aria-label="Ver todo el calzado">MK</a>
+    <div class="buscador">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"
+           stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+      <input id="buscador" type="search" placeholder="Buscar un modelo"
+             aria-label="Buscar un modelo por nombre">
     </div>
   </header>
 
-  <div class="promo">
-    <button class="flecha" aria-label="Anterior">‹</button>
-    <span>¡Hazte miembro y obtén 15% OFF con el cupón <b>BIENVENIDO15</b>! &nbsp;<a href="#">Ver T&amp;C. Ir a colección</a></span>
-    <button class="flecha" aria-label="Siguiente">›</button>
-  </div>
-
   <main class="catalogo">
-    <aside class="filtros" id="filtros">
-      <div id="gruposFiltro"></div>
-      <div class="grupo" data-abierto="true">
-        <button class="grupo-cab">Lo nuevo <span class="chev">⌄</span></button>
-        <div class="grupo-cuerpo">
-          <label class="opcion"><input type="checkbox" id="fNuevo"> En MK</label>
-        </div>
-      </div>
-      <div class="filtros-pie">
-        <button class="btn-texto" id="limpiar">Limpiar filtros</button>
-      </div>
-    </aside>
+    <div class="intro">
+      <h1 id="introTitulo">Todo el calzado</h1>
+      <p id="introTexto"></p>
+    </div>
 
-    <section class="resultados">
-      <p class="migas">Lo nuevo</p>
-      <div class="cab-resultados">
-        <h1>En MK Lo nuevo (<span id="nResultados">0</span>)</h1>
-        <div class="herramientas">
-          <button id="btnFiltros">Ocultar filtros
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2">
-              <path d="M4 7h16M7 12h10M10 17h4"/></svg>
-          </button>
-          <select id="orden" aria-label="Ordenar por">
-            <option value="relevancia">Ordenar por</option>
-            <option value="precio-asc">Precio: menor a mayor</option>
-            <option value="precio-desc">Precio: mayor a menor</option>
-            <option value="nombre">Nombre A–Z</option>
-          </select>
-        </div>
+    <nav class="chips" id="chips" aria-label="Líneas de calzado"></nav>
+
+    <div class="cab-resultados">
+      <p id="nResultados"></p>
+      <div class="herramientas">
+        <select id="orden" aria-label="Ordenar los modelos">
+          <option value="orden">Orden del catálogo</option>
+          <option value="precio-asc">Precio: de menor a mayor</option>
+          <option value="precio-desc">Precio: de mayor a menor</option>
+          <option value="nombre">Nombre, de la A a la Z</option>
+        </select>
       </div>
-      <div class="rejilla" id="rejilla"></div>
-      <div class="sin-resultados oculto" id="sinResultados">
-        No hay productos que coincidan con los filtros.
-      </div>
-    </section>
+    </div>
+
+    <div class="rejilla" id="rejilla"></div>
+    <div class="sin-resultados oculto" id="sinResultados"></div>
   </main>
 </div>
 
@@ -653,7 +536,9 @@ img{ max-width:100%; display:block; }
       <h2 id="pNombre">—</h2>
       <p class="p-cat" id="pCategoria">—</p>
       <p class="p-precio" id="pPrecio">—</p>
-      <p class="seccion">Piezas · pulsa para inspeccionar</p>
+      <p class="ayuda">Toca los puntos sobre el zapato —o un nombre de la lista—
+        para ver de qué material es cada parte.</p>
+      <p class="seccion">Las piezas, una a una</p>
       <div id="pLista"></div>
       <div id="pFicha"></div>
     </aside>
@@ -1343,15 +1228,71 @@ const PRODUCTOS = [
         desc:"Forro de piel sin teñir. Transpira mucho más que un forro sintético.",
         specs:[["Material","Piel"],["Curtido","Vegetal"],["Zona","Interior completo"]] }
     ]
+  },
+  {
+    id: "botas-012",
+    nombre: "MK Trail Boot",
+    categoria: "Botas",
+    genero: "Unisex",
+    tipo: "Botas",
+    precio: 499.90,
+    colores: 1,
+    nuevo: true,
+    etiquetas: ["Nuevo"],
+    img: "img/botas-012-lateral.jpg",
+    w: 2400, h: 1792,
+    descripcion: "Bota de caña alta en piel, con panel de piel camel en la lengüeta, anilla metálica y suela gruesa de tacos. Pensada para frío y para terreno blando.",
+    piezas: [
+      { id:"piel", n:1, x:900, y:1000, label:"Piel del corte", tex:"tx-cuero-negro",
+        material:"Piel de plena flor", tipo:"Nobuk graso",
+        desc:"Caña y cuerpo en piel grasa, tratada para que el agua resbale. Al ser grasa y no un acabado superficial, se puede reengrasar cuando se seca.",
+        specs:[["Espesor","1,8 mm"],["Acabado","Graso"],["Tratamiento","Repelente"]] },
+      { id:"panel", n:2, x:1360, y:720, label:"Panel de la lengüeta", tex:"tx-cuero",
+        material:"Piel lisa", tipo:"Plena flor camel",
+        desc:"Panel de piel camel bajo el trenzado. Es la única nota de color de la bota y va en un sitio que no se roza al andar.",
+        specs:[["Espesor","1,5 mm"],["Color","Camel"],["Zona","Lengüeta"]] },
+      { id:"cordones", n:3, x:1144, y:695, label:"Cordones", tex:"tx-trenza",
+        material:"Cordón redondo", tipo:"Nylon 4 mm",
+        desc:"Cordón de nylon, no de algodón: no se pudre con la humedad y no se hiela. En una bota es lo que marca la diferencia.",
+        specs:[["Material","Nylon"],["Ancho","4 mm"],["Largo","130 cm"]] },
+      { id:"anilla", n:4, x:1440, y:352, label:"Anilla", tex:"tx-metal",
+        material:"Anilla en D", tipo:"Acero niquelado",
+        desc:"Anilla metálica en la parte alta del trenzado. Permite tensar de un tirón y reparte la tensión sin que el cordón corte la piel.",
+        specs:[["Material","Acero"],["Forma","En D"],["Acabado","Niquelado"]] },
+      { id:"cuello", n:5, x:1680, y:320, label:"Cuello acolchado", tex:"tx-tela",
+        material:"Cuello acolchado", tipo:"Textil sobre espuma",
+        desc:"Borde superior acolchado y forrado en textil. Es lo que permite apretar la bota sin que el canto clave en la espinilla.",
+        specs:[["Relleno","Espuma 12 mm"],["Forro","Textil"]] },
+      { id:"logo", n:6, x:1792, y:768, label:"Logo grabado", tex:"tx-cuero-negro",
+        material:"Logo en relieve", tipo:"Grabado en seco",
+        desc:"El monograma va grabado directamente sobre la piel, sin placa ni aplique que se pueda despegar.",
+        specs:[["Técnica","Grabado en caliente"],["Soporte","Piel grasa"]] },
+      { id:"tirante", n:7, x:2160, y:416, label:"Tirante del talón", tex:"tx-cuero",
+        material:"Tirante de piel", tipo:"Piel doblada",
+        desc:"Tirante de piel en el talón para calzar la bota sin doblarla por detrás, que es como se deforman los contrafuertes.",
+        specs:[["Material","Piel"],["Remate","Doblado"]] },
+      { id:"entresuela", n:8, x:1120, y:1400, label:"Entresuela", tex:"tx-espuma",
+        material:"Entresuela", tipo:"EVA inyectada",
+        desc:"Entresuela gruesa de EVA, de 38 mm. Da aislamiento del frío del suelo, que en una bota de invierno importa tanto como el agarre.",
+        specs:[["Altura","38 mm"],["Material","EVA"],["Drop","10 mm"]] },
+      { id:"planta", n:9, x:1120, y:1520, label:"Planta", tex:"tx-goma",
+        material:"Planta exterior", tipo:"Caucho con tacos",
+        desc:"Caucho con tacos profundos y separados, para que se vacíen solos al caminar y no se quede el barro pegado.",
+        specs:[["Material","Caucho"],["Tacos","5 mm"],["Dibujo","Separado"]] },
+      { id:"puntera", n:10, x:640, y:1120, label:"Puntera", tex:"tx-cuero-negro",
+        material:"Puntera reforzada", tipo:"Doble pespunte",
+        desc:"Antepié de una pieza con doble pespunte y sin costura central. Al no haber empalme en el centro, no hay por dónde entrar el agua.",
+        specs:[["Costura","Doble pespunte"],["Piezas","Una sola"]] }
+    ]
   }
 ];
 
 /* Facetas del filtro, derivadas de los productos */
-const FILTROS = [
-  { id:"genero",   titulo:"Género",    campo:"genero"   },
-  { id:"tipo",     titulo:"Categoría", campo:"tipo"     },
-  { id:"etiqueta", titulo:"Etiqueta",  campo:"etiquetas" }
-];
+/* Las líneas del catálogo, en el orden en que se muestran.
+   Se sacan de los propios datos, así que añadir un modelo nuevo con un tipo
+   nuevo hace aparecer su pestaña sola. */
+const LINEAS = ["Caña alta urbana", "Caña baja urbana", "Caña baja clásica",
+                "Vestir", "Botas"];
 
 /* ═══════════════════════════════════════════════════════════════════
    2 · ESTADO
@@ -1360,12 +1301,27 @@ const FILTROS = [
 const $ = (s) => document.querySelector(s);
 
 const E = {
-  seleccion: new Set(),   // claves "grupo:valor" activas
-  soloNuevo: false,
-  orden: "relevancia",
+  linea: "todo",          // línea activa, o "todo" para verlas todas
+  orden: "orden",
   busqueda: "",
   producto: null
 };
+
+/* Qué es cada línea, dicho para quien no conoce el producto.
+   "Caña" es la altura del zapato por encima del tobillo: es el término
+   correcto, pero no lo sabe todo el mundo, así que se explica. */
+const QUE_ES = {
+  "Caña alta urbana": "Suben por encima del tobillo, con suela gruesa y aire deportivo.",
+  "Caña baja urbana": "Bajos, montados sobre una suela alta y gruesa.",
+  "Caña baja clásica": "Bajos, de líneas finas y suela de goma. Los de siempre.",
+  "Vestir": "Piel lisa y suela de goma dentada. Para looks formales.",
+  "Botas": "Caña alta de invierno, con suela de tacos y piel tratada."
+};
+
+function resumenTodo(){
+  return PRODUCTOS.length + " modelos en " + LINEAS.length +
+         " líneas. Toca cualquiera para ver de cerca de qué está hecho.";
+}
 
 /* ═══════════════════════════════════════════════════════════════════
    3 · CATÁLOGO
@@ -1380,67 +1336,59 @@ function valoresDe(p, campo){
 
 function productosFiltrados(){
   let lista = PRODUCTOS.filter(p => {
-    if (E.soloNuevo && !p.nuevo) return false;
+    if (E.linea !== "todo" && p.tipo !== E.linea) return false;
     if (E.busqueda){
       const t = (p.nombre + " " + p.categoria + " " + p.tipo).toLowerCase();
       if (!t.includes(E.busqueda)) return false;
     }
-    for (const f of FILTROS){
-      const activos = [...E.seleccion]
-        .filter(k => k.startsWith(f.id + ":"))
-        .map(k => k.slice(f.id.length + 1));
-      if (activos.length && !activos.some(v => valoresDe(p, f.campo).includes(v))){
-        return false;
-      }
-    }
     return true;
   });
-
   if (E.orden === "precio-asc")  lista = lista.slice().sort((a,b) => a.precio - b.precio);
   if (E.orden === "precio-desc") lista = lista.slice().sort((a,b) => b.precio - a.precio);
   if (E.orden === "nombre")      lista = lista.slice().sort((a,b) => a.nombre.localeCompare(b.nombre,"es"));
   return lista;
 }
 
-function pintarGrupos(){
-  $("#gruposFiltro").innerHTML = FILTROS.map(f => {
-    const valores = [...new Set(PRODUCTOS.flatMap(p => valoresDe(p, f.campo)))].sort();
-    const opciones = valores.map(v => `
-      <label class="opcion">
-        <input type="checkbox" data-grupo="${f.id}" value="${v}">
-        ${v}
-      </label>`).join("");
-    return `
-      <div class="grupo" data-abierto="false">
-        <button class="grupo-cab">${f.titulo} <span class="chev">⌄</span></button>
-        <div class="grupo-cuerpo">${opciones}</div>
-      </div>`;
-  }).join("");
+function cuantosEn(linea){
+  return PRODUCTOS.filter(p => linea === "todo" || p.tipo === linea).length;
+}
+
+/* Las líneas, como pastillas. Antes eran tres paneles de casillas (género,
+   categoría y etiqueta) que obligaban a combinar filtros para llegar a algo
+   que aquí se elige de un toque. */
+function pintarChips(){
+  const items = [["todo", "Todo el calzado"]].concat(LINEAS.map(l => [l, l]));
+  $("#chips").innerHTML = items.map(([v, et]) => `
+    <button class="chip" data-linea="${v}" aria-pressed="${E.linea === v}">
+      ${et}<span class="n">${cuantosEn(v)}</span>
+    </button>`).join("");
 }
 
 function pintarRejilla(){
   const lista = productosFiltrados();
-  $("#nResultados").textContent = lista.length;
+
+  $("#introTitulo").textContent = E.linea === "todo" ? "Todo el calzado" : E.linea;
+  $("#introTexto").textContent = E.busqueda
+    ? (lista.length === 1 ? "1 resultado para tu búsqueda." : lista.length + " resultados para tu búsqueda.")
+    : (E.linea === "todo" ? resumenTodo() : (QUE_ES[E.linea] || ""));
+
+  $("#nResultados").textContent = lista.length === 1 ? "1 modelo" : lista.length + " modelos";
   $("#sinResultados").classList.toggle("oculto", lista.length > 0);
+  $("#sinResultados").textContent =
+    "No hay modelos que coincidan. Prueba con otra línea o borra la búsqueda.";
 
   $("#rejilla").innerHTML = lista.map(p => `
     <article class="tarjeta">
       <div class="tarjeta-foto" data-abrir="${p.id}" role="button" tabindex="0"
-           aria-label="Ver ${p.nombre}">
-        <button class="tarjeta-fav" aria-pressed="false" aria-label="Añadir a favoritos"
-                data-fav>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.9">
-            <path d="M12 20.5S3.5 15 3.5 9.4A4.9 4.9 0 0 1 12 6a4.9 4.9 0 0 1 8.5 3.4C20.5 15 12 20.5 12 20.5z"/>
-          </svg>
-        </button>
+           aria-label="Ver las piezas de ${p.nombre}">
         <img src="${p.img}" alt="${p.nombre}" loading="lazy">
       </div>
       <div class="tarjeta-info">
         ${p.nuevo ? '<span class="insignia">Nuevo</span>' : ""}
         <h3>${p.nombre}</h3>
-        <p class="cat">${p.categoria}</p>
-        <p class="colores">${p.colores} ${p.colores === 1 ? "Color" : "Colores"}</p>
+        <p class="cat">${p.tipo}</p>
         <p class="precio">${eur(p.precio)}</p>
+        <span class="tarjeta-ver">Ver las piezas →</span>
       </div>
     </article>`).join("");
 }
@@ -1644,49 +1592,37 @@ function sincronizarHash(){
    5 · EVENTOS
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Grupos de filtro: abrir y cerrar */
+/* Pastillas de línea, y abrir la ficha de un modelo */
 document.addEventListener("click", (e) => {
-  const cab = e.target.closest(".grupo-cab");
-  if (cab){
-    const g = cab.parentElement;
-    g.dataset.abierto = g.dataset.abierto === "true" ? "false" : "true";
-    return;
-  }
-  const fav = e.target.closest("[data-fav]");
-  if (fav){
-    e.stopPropagation();
-    fav.setAttribute("aria-pressed", fav.getAttribute("aria-pressed") !== "true");
+  const chip = e.target.closest(".chip");
+  if (chip){
+    E.linea = chip.dataset.linea;
+    pintarChips();
+    pintarRejilla();
+    window.scrollTo({ top:0, behavior:"smooth" });
     return;
   }
   const abrir = e.target.closest("[data-abrir]");
   if (abrir){ abrirDetalle(abrir.dataset.abrir); return; }
 });
 
-/* Filtros y búsqueda */
-$("#gruposFiltro").addEventListener("change", (e) => {
-  const c = e.target;
-  if (c.type !== "checkbox") return;
-  const clave = c.dataset.grupo + ":" + c.value;
-  c.checked ? E.seleccion.add(clave) : E.seleccion.delete(clave);
-  pintarRejilla();
+/* Abrir una tarjeta con el teclado */
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const abrir = e.target.closest("[data-abrir]");
+  if (abrir){ e.preventDefault(); abrirDetalle(abrir.dataset.abrir); }
 });
-$("#fNuevo").addEventListener("change", (e) => { E.soloNuevo = e.target.checked; pintarRejilla(); });
-$("#limpiar").addEventListener("click", () => {
-  E.seleccion.clear(); E.soloNuevo = false; E.busqueda = "";
-  document.querySelectorAll('#gruposFiltro input[type=checkbox]').forEach(c => c.checked = false);
-  $("#fNuevo").checked = false;
-  $("#buscador").value = "";
-  pintarRejilla();
+
+$("#irInicio").addEventListener("click", (e) => {
+  e.preventDefault();
+  E.linea = "todo"; E.busqueda = ""; $("#buscador").value = "";
+  pintarChips(); pintarRejilla();
 });
+
 $("#orden").addEventListener("change", (e) => { E.orden = e.target.value; pintarRejilla(); });
 $("#buscador").addEventListener("input", (e) => {
-  E.busqueda = e.target.value.trim().toLowerCase(); pintarRejilla();
-});
-$("#btnFiltros").addEventListener("click", () => {
-  const f = $("#filtros");
-  f.classList.toggle("abierto");
-  const visible = getComputedStyle(f).display !== "none";
-  $("#btnFiltros").firstChild.textContent = visible ? "Ocultar filtros" : "Mostrar filtros";
+  E.busqueda = e.target.value.trim().toLowerCase();
+  pintarRejilla();
 });
 
 /* Volver */
@@ -1800,7 +1736,7 @@ window.addEventListener("resize", () => {
    6 · ARRANQUE
    ═══════════════════════════════════════════════════════════════════ */
 
-pintarGrupos();
+pintarChips();
 pintarRejilla();
 sincronizarHash();
 </script>

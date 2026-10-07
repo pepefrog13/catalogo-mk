@@ -2,10 +2,7 @@
 
 **Aviso:** los materiales y sobre todo las especificaciones los escribí yo
 mirando las fotos. Lo deducible (familia del material, colores, tipo de suela)
-es razonable; **todos los números son inventados**: espesores, curtidos,
-durezas, alturas. Corrige lo que quieras y me lo pasas.
-
-Formatos: este Markdown y `revision-materiales.csv`.
+es razonable; **todos los números son inventados**. Corrige y me lo pasas.
 
 
 ## 001 · MK Terra High  (Caña alta urbana)
@@ -172,3 +169,18 @@ Formatos: este Markdown y `revision-materiales.csv`.
 | 8 | Suela | Suela de goma | Caucho con tacos | Material Caucho · Altura 14 mm · Tacos 3 mm |  |
 | 9 | Tacón | Tacón | Caucho inyectado | Altura 30 mm · Material Caucho · Recambiable Sí |  |
 | 10 | Forro | Forro interior | Piel curtida al vegetal | Material Piel · Curtido Vegetal · Zona Interior completo |  |
+
+## 012 · MK Trail Boot  (Botas)
+
+| # | Pieza | Material | Tipo | Especificaciones | Corrección |
+|---|---|---|---|---|---|
+| 1 | Piel del corte | Piel de plena flor | Nobuk graso | Espesor 1,8 mm · Acabado Graso · Tratamiento Repelente |  |
+| 2 | Panel de la lengüeta | Piel lisa | Plena flor camel | Espesor 1,5 mm · Color Camel · Zona Lengüeta |  |
+| 3 | Cordones | Cordón redondo | Nylon 4 mm | Material Nylon · Ancho 4 mm · Largo 130 cm |  |
+| 4 | Anilla | Anilla en D | Acero niquelado | Material Acero · Forma En D · Acabado Niquelado |  |
+| 5 | Cuello acolchado | Cuello acolchado | Textil sobre espuma | Relleno Espuma 12 mm · Forro Textil |  |
+| 6 | Logo grabado | Logo en relieve | Grabado en seco | Técnica Grabado en caliente · Soporte Piel grasa |  |
+| 7 | Tirante del talón | Tirante de piel | Piel doblada | Material Piel · Remate Doblado |  |
+| 8 | Entresuela | Entresuela | EVA inyectada | Altura 38 mm · Material EVA · Drop 10 mm |  |
+| 9 | Planta | Planta exterior | Caucho con tacos | Material Caucho · Tacos 5 mm · Dibujo Separado |  |
+| 10 | Puntera | Puntera reforzada | Doble pespunte | Costura Doble pespunte · Piezas Una sola |  |

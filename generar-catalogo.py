@@ -460,6 +460,7 @@ GANCHOS = {
     "zapatillas-009": "Negro con pespunte crudo, para que el negro no sea aburrido.",
     "zapatos-010": "El Derby de siempre, con suela que agarra en la calle.",
     "zapatos-011": "Piel curtida al vegetal: envejece ganando tono.",
+    "botas-012": "Piel grasa y suela de tacos, para cuando el suelo no ayuda.",
 }
 
 # Una línea por tipo, para el índice y la portada
@@ -468,11 +469,12 @@ LINEAS = {
     "Caña baja urbana": "Perfil bajo montado sobre suela de copa alta.",
     "Caña baja clásica": "Corte bajo de líneas finas, franjas y fondo de goma.",
     "Vestir": "Derby de piel con suela de goma dentada.",
+    "Botas": "Caña alta de invierno, con suela de tacos y piel tratada.",
 }
 
 # Orden en que se agrupan los tipos en el índice y en el catálogo.
 ORDEN_TIPOS = ["Caña alta urbana", "Caña baja urbana",
-               "Caña baja clásica", "Vestir"]
+               "Caña baja clásica", "Vestir", "Botas"]
 
 
 def _umbrales(a, m=24):
