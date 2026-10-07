@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MK · Lo nuevo</title>
+<style>
+/* ═══════════════════════════════════════════════════════════════════
+   MK — catálogo + ficha interactiva
+   Un solo archivo. Sin dependencias, sin build, sin servidor.
+   ═══════════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+:root{
+  --tinta:      #111111;
+  --tinta-2:    #4a4a4a;
+  --gris:       #707072;
+  --gris-claro: #cacacb;
+  --linea:      #e5e5e5;
+  --linea-2:    #f0f0f0;
+  --nuevo:      #9e3500;
+  --acento:     #111111;
+  --fuente: "Helvetica Neue", Helvetica, Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+html, body { margin:0; padding:0; }
+body{
+  background:#fff;
+  color: var(--tinta);
+  font-family: var(--fuente);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+button{ font-family: inherit; cursor: pointer; }
+img{ max-width:100%; display:block; }
+.oculto{ display:none !important; }
+
+/* ══ CABECERA ══════════════════════════════════════════════════════ */
+
+.topbar{
+  background:#111; color:#fff;
+  font-size: 12px;
+  padding: 7px 44px;
+  display:flex; justify-content:flex-end; gap:22px;
+}
+.topbar a{ color:#fff; text-decoration:none; opacity:.92; }
+.topbar a:hover{ opacity:.65; }
+.topbar .sep{ opacity:.35; }
+
+.cabecera{
+  display:flex; align-items:center; gap:26px;
+  padding: 14px 44px 16px;
+  background:#fff;
+  position: sticky; top:0; z-index:30;
+  border-bottom: 1px solid transparent;
+}
+.marca{
+  font-size: 25px; font-weight: 900; letter-spacing:-.06em;
+  text-decoration:none; color:var(--tinta);
+  display:flex; align-items:center; gap:2px;
+}
+.marca svg{ width:26px; height:26px; }
+.menu{
+  display:flex; gap:24px; list-style:none; margin:0 auto; padding:0;
+}
+.menu a{
+  color:var(--tinta); text-decoration:none; font-size:15px; font-weight:500;
+  padding-bottom:2px; border-bottom:2px solid transparent;
+}
+.menu a:hover{ border-bottom-color: var(--tinta); }
+.menu a[aria-current="page"]{ border-bottom-color: var(--tinta); font-weight:600; }
+
+.acciones{ display:flex; align-items:center; gap:12px; }
+.buscador{
+  display:flex; align-items:center; gap:8px;
+  background:#f5f5f5; border-radius:999px;
+  padding: 9px 16px; width: 190px;
+  transition: background .15s, box-shadow .15s;
+}
+.buscador:focus-within{ background:#fff; box-shadow: inset 0 0 0 1.5px var(--tinta); }
+.buscador input{
+  border:0; background:transparent; outline:none; width:100%;
+  font-family:inherit; font-size:14px; color:var(--tinta);
+}
+.buscador svg{ width:17px; height:17px; flex:0 0 auto; }
+.icono{
+  width:38px; height:38px; border-radius:50%;
+  border:0; background:#f5f5f5;
+  display:grid; place-items:center;
+}
+.icono:hover{ background:#e9e9e9; }
+.icono svg{ width:19px; height:19px; }
+
+.promo{
+  background:#f5f5f5;
+  display:flex; align-items:center; justify-content:center;
+  gap:18px; padding: 9px 44px;
+  font-size:13px; position:relative;
+}
+.promo b{ font-weight:700; }
+.promo a{ color:var(--tinta); }
+.promo .flecha{
+  background:none; border:0; font-size:16px; color:var(--tinta-2);
+  padding:2px 8px;
+}
+.promo .flecha:hover{ color:var(--tinta); }
+
+/* ══ CATÁLOGO ══════════════════════════════════════════════════════ */
+
+.catalogo{
+  display:grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+  gap: 0 34px;
+  padding: 22px 44px 70px;
+  align-items:start;
+}
+
+/* ── Filtros ── */
+.filtros{ position: sticky; top: 82px; }
+.grupo{ border-bottom: 1px solid var(--linea); }
+.grupo-cab{
+  width:100%; background:none; border:0;
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 15px 2px; font-size:15px; font-weight:500; color:var(--tinta);
+  text-align:left;
+}
+.grupo-cab:hover{ color:var(--gris); }
+.chev{ transition: transform .18s; display:inline-block; font-size:12px; color:var(--gris); }
+.grupo[data-abierto="true"] .chev{ transform: rotate(180deg); }
+.grupo-cuerpo{
+  display:none; padding: 2px 2px 16px;
+}
+.grupo[data-abierto="true"] .grupo-cuerpo{ display:block; }
+.opcion{
+  display:flex; align-items:center; gap:9px;
+  padding: 6px 0; font-size:14px; color:var(--tinta-2); cursor:pointer;
+}
+.opcion:hover{ color:var(--tinta); }
+.opcion input{ accent-color: var(--tinta); width:15px; height:15px; }
+.opcion .cuenta{ margin-left:auto; font-size:12px; color:var(--gris-claro); }
+
+.filtros-pie{ padding-top:18px; }
+.btn-texto{
+  background:none; border:0; padding:0;
+  font-size:13px; color:var(--gris); text-decoration:underline;
+}
+.btn-texto:hover{ color:var(--tinta); }
+
+/* ── Resultados ── */
+.migas{ font-size:13px; color:var(--gris); margin: 0 0 6px; }
+.cab-resultados{
+  display:flex; align-items:flex-end; justify-content:space-between;
+  gap:20px; margin-bottom: 18px;
+}
+.cab-resultados h1{
+  font-size: 23px; font-weight: 600; letter-spacing:-.01em; margin:0;
+}
+.herramientas{ display:flex; align-items:center; gap:20px; font-size:14px; }
+.herramientas button{
+  background:none; border:0; color:var(--tinta); font-size:14px;
+  display:flex; align-items:center; gap:7px; padding:4px 0;
+}
+.herramientas button:hover{ color:var(--gris); }
+.herramientas select{
+  font-family:inherit; font-size:14px; color:var(--tinta);
+  border:0; background:none; padding:4px 0; cursor:pointer; outline:none;
+}
+
+/* ── Rejilla de producto ── */
+.rejilla{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+  gap: 30px 14px;
+}
+.tarjeta{ position:relative; }
+.tarjeta-foto{
+  position:relative;
+  background:#fff; border-radius:2px;
+  aspect-ratio: 1448 / 1086;
+  overflow:hidden;
+  cursor:pointer;
+}
+.tarjeta-foto img{
+  width:100%; height:100%; object-fit:contain;
+  transition: transform .35s ease;
+}
+.tarjeta-foto:hover img{ transform: scale(1.035); }
+.tarjeta-fav{
+  position:absolute; top:12px; right:12px; z-index:2;
+  width:34px; height:34px; border-radius:50%;
+  border:0; background:rgba(255,255,255,.92);
+  display:grid; place-items:center;
+  box-shadow: 0 1px 3px rgba(0,0,0,.12);
+}
+.tarjeta-fav svg{ width:17px; height:17px; }
+.tarjeta-fav[aria-pressed="true"] svg{ fill:#111; }
+.tarjeta-info{ padding: 14px 2px 0; }
+.insignia{
+  color: var(--nuevo); font-size:14px; font-weight:600; display:block;
+  margin-bottom:3px;
+}
+.tarjeta-info h3{
+  font-size:15px; font-weight:600; margin:0 0 3px; letter-spacing:-.01em;
+}
+.tarjeta-info .cat{ font-size:14px; color:var(--gris); margin:0 0 3px; }
+.tarjeta-info .colores{ font-size:14px; color:var(--gris); margin:0 0 12px; }
+.tarjeta-info .precio{ font-size:15px; font-weight:600; margin:0; }
+
+.sin-resultados{
+  border:1px dashed var(--linea); border-radius:8px;
+  padding: 60px 24px; text-align:center; color:var(--gris); font-size:14px;
+}
+
+/* ══ DETALLE ═══════════════════════════════════════════════════════ */
+
+.cab-detalle{
+  display:flex; align-items:center; gap:18px;
+  padding: 14px 44px;
+  border-bottom:1px solid var(--linea);
+  position: sticky; top:0; z-index:30; background:#fff;
+}
+.volver{
+  background:none; border:0; padding:6px 0;
+  font-size:14px; color:var(--tinta);
+  display:flex; align-items:center; gap:7px;
+}
+.volver:hover{ color:var(--gris); }
+.cab-detalle .marca{ margin-left:auto; font-size:20px; }
+
+.detalle{
+  display:grid;
+  grid-template-columns: minmax(0,1fr) 372px;
+  gap:0;
+  border-bottom:1px solid var(--linea);
+}
+
+/* ── Escenario ── */
+.escenario{
+  position:relative;
+  background:#fff;
+  min-height: 420px;
+  height: calc(100vh - 190px);
+  max-height: 780px;
+  overflow:hidden;
+  cursor: grab;
+  touch-action: none;
+  border-right:1px solid var(--linea);
+}
+.escenario.arrastrando{ cursor: grabbing; }
+.escenario.zoom{ cursor: crosshair; }
+
+.lienzo{
+  position:absolute; left:0; top:0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+.lienzo img{ width:100%; height:100%; user-select:none; -webkit-user-drag:none; }
+
+/* ── Hotspots ── */
+.punto{
+  position:absolute;
+  width:30px; height:30px; margin:0;
+  border-radius:50%;
+  background:#fff;
+  border:1.5px solid var(--tinta);
+  color:var(--tinta);
+  font-size:13px; font-weight:700;
+  display:grid; place-items:center;
+  transform-origin:center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.18);
+  transition: background .15s, color .15s;
+  padding:0;
+}
+.punto:hover{ background:var(--tinta); color:#fff; }
+.punto[aria-pressed="true"]{ background:var(--tinta); color:#fff; }
+.punto.atenuado{ opacity:.28; }
+.punto::after{
+  content: attr(data-label);
+  position:absolute; top: calc(100% + 8px); left:50%;
+  transform: translateX(-50%);
+  background:#111; color:#fff;
+  font-size:11px; font-weight:600; letter-spacing:.04em;
+  padding: 4px 9px; border-radius:4px;
+  white-space:nowrap; opacity:0; pointer-events:none;
+  transition: opacity .15s;
+}
+.punto:hover::after{ opacity:1; }
+
+/* ── Lupa ── */
+.lupa{
+  position:absolute; width:190px; height:190px; border-radius:50%;
+  border:2px solid var(--tinta);
+  box-shadow: 0 14px 40px rgba(0,0,0,.22);
+  background-color:#fff;
+  background-repeat:no-repeat;
+  pointer-events:none; z-index:20;
+  transform: translate(-50%,-50%);
+  opacity:0; transition: opacity .14s;
+}
+.lupa.activa{ opacity:1; }
+.lupa::after{
+  content: attr(data-label);
+  position:absolute; left:0; right:0; bottom:0;
+  background: linear-gradient(transparent, rgba(255,255,255,.95) 55%);
+  color:var(--tinta); font-size:10px; font-weight:700;
+  letter-spacing:.12em; text-transform:uppercase; text-align:center;
+  padding: 18px 0 7px;
+}
+
+/* ── Panel ── */
+.panel{ padding: 26px 30px 40px; overflow-y:auto; max-height: calc(100vh - 190px); }
+.panel h2{ font-size:22px; font-weight:600; margin:0 0 4px; letter-spacing:-.01em; }
+.panel .p-cat{ font-size:14px; color:var(--gris); margin:0 0 14px; }
+.panel .p-precio{ font-size:19px; font-weight:600; margin:0 0 22px; }
+.seccion{
+  font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+  color:var(--gris); font-weight:700; margin: 0 0 10px;
+  padding-top: 20px; border-top:1px solid var(--linea-2);
+}
+.pieza{
+  display:flex; align-items:center; gap:11px; width:100%;
+  background:none; border:0; border-radius:6px;
+  padding: 8px 9px; margin-bottom:2px;
+  font-size:14px; color:var(--tinta-2); text-align:left;
+}
+.pieza:hover{ background:#f7f7f7; color:var(--tinta); }
+.pieza[aria-pressed="true"]{ background:#f0f0f0; color:var(--tinta); font-weight:600; }
+.pieza .n{
+  flex:0 0 21px; height:21px; border-radius:50%;
+  background:#fff; border:1.5px solid var(--gris-claro);
+  font-size:11px; font-weight:700; display:grid; place-items:center;
+  color:var(--tinta-2);
+}
+.pieza[aria-pressed="true"] .n{ background:var(--tinta); border-color:var(--tinta); color:#fff; }
+
+.ficha{ margin-top:20px; border-top:1px solid var(--linea); padding-top:20px; }
+.ficha-muestra{
+  height:104px; border-radius:8px; margin-bottom:16px;
+  border:1px solid var(--linea);
+  position:relative; overflow:hidden;
+}
+.ficha-muestra span{
+  position:absolute; left:11px; bottom:9px;
+  font-size:9.5px; letter-spacing:.16em; text-transform:uppercase;
+  font-weight:700; color:rgba(255,255,255,.9);
+  text-shadow: 0 1px 5px rgba(0,0,0,.8);
+}
+.ficha h3{ font-size:16px; font-weight:600; margin:0 0 2px; }
+.ficha .tipo{
+  font-size:11px; letter-spacing:.13em; text-transform:uppercase;
+  font-weight:700; color:var(--nuevo); margin:0 0 11px;
+}
+.ficha p.desc{ font-size:13.5px; color:var(--tinta-2); margin:0 0 15px; line-height:1.6; }
+.especificaciones{ font-size:13px; margin:0; }
+.especificaciones > div{
+  display:flex; justify-content:space-between; gap:14px;
+  padding: 8px 0; border-top:1px solid var(--linea-2);
+}
+.especificaciones dt{ color:var(--gris); margin:0; }
+.especificaciones dd{ margin:0; font-weight:600; text-align:right; }
+
+.aviso{
+  border:1px dashed var(--linea); border-radius:8px;
+  padding: 26px 18px; text-align:center; color:var(--gris); font-size:13.5px;
+  margin-top:20px;
+}
+.aviso b{ display:block; color:var(--tinta-2); margin-bottom:5px; font-size:14px; }
+
+/* Texturas de muestra (CSS puro, sin imágenes) */
+.tx-ante{
+  background-color:#1c1a19;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.11) 0 1.4px, transparent 2.2px),
+    radial-gradient(circle at 22% 78%, rgba(0,0,0,.5) 0 1.8px, transparent 2.8px);
+  background-size: 6px 6px, 10px 10px;
+}
+.tx-piel{
+  background-color:#17181a;
+  background-image:
+    radial-gradient(circle at 30% 35%, rgba(255,255,255,.09) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 72% 68%, rgba(0,0,0,.45) 0 1.3px, transparent 2px);
+  background-size: 8px 8px, 12px 12px;
+}
+.tx-trenza{
+  background-color:#2a2b2e;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.15) 0 3px, transparent 3px 6px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.15) 0 3px, transparent 3px 6px);
+}
+.tx-espuma{
+  background-color:#f4f4f6;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(0,0,0,.09) 0 1px, transparent 1px 9px);
+}
+.tx-goma{
+  background-color:#131315;
+  background-image:
+    repeating-linear-gradient(62deg, rgba(255,255,255,.10) 0 2px, transparent 2px 8px);
+}
+.tx-metal{
+  background: linear-gradient(140deg,#8e9196,#d6d9dd 42%,#7d8085);
+}
+.tx-tpu{
+  background: linear-gradient(140deg,#0d0e10,#3a3d42 48%,#0a0b0d);
+}
+
+/* Antes teñidos en pieza: el color va en la muestra, la trama es la misma */
+.tx-ante-verde{
+  background-color:#1f3a2c;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.10) 0 1.4px, transparent 2.2px),
+    radial-gradient(circle at 22% 78%, rgba(0,0,0,.45) 0 1.8px, transparent 2.8px);
+  background-size: 6px 6px, 10px 10px;
+}
+.tx-ante-camel{
+  background-color:#c9ab86;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.30) 0 1.4px, transparent 2.2px),
+    radial-gradient(circle at 22% 78%, rgba(90,60,30,.32) 0 1.8px, transparent 2.8px);
+  background-size: 6px 6px, 10px 10px;
+}
+.tx-ante-teja{
+  background-color:#8a3b22;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.16) 0 1.4px, transparent 2.2px),
+    radial-gradient(circle at 22% 78%, rgba(0,0,0,.40) 0 1.8px, transparent 2.8px);
+  background-size: 6px 6px, 10px 10px;
+}
+.tx-piel-naranja{
+  background-color:#d08a30;
+  background-image:
+    radial-gradient(circle at 30% 35%, rgba(255,255,255,.20) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 72% 68%, rgba(90,50,0,.35) 0 1.3px, transparent 2px);
+  background-size: 9px 9px, 13px 13px;
+}
+.tx-goma-miel{
+  background-color:#b98d5c;
+  background-image:
+    repeating-linear-gradient(62deg, rgba(255,255,255,.14) 0 2px, transparent 2px 8px);
+}
+.tx-malla{
+  background-color:#2a2f42;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.22) 0 1.3px, transparent 1.8px);
+  background-size: 6px 6px;
+}
+.tx-tela{
+  background-color:#2c2f38;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.07) 0 1px, transparent 1px 3px);
+}
+.tx-ante-rojo{
+  background-color:#8e1a26;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.14) 0 1.4px, transparent 2.2px),
+    radial-gradient(circle at 22% 78%, rgba(0,0,0,.42) 0 1.8px, transparent 2.8px);
+  background-size: 6px 6px, 10px 10px;
+}
+.tx-ante-plomo{
+  background-color:#5a5a60;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,.20) 0 1.4px, transparent 2.2px),
+    radial-gradient(circle at 22% 78%, rgba(0,0,0,.34) 0 1.8px, transparent 2.8px);
+  background-size: 6px 6px, 10px 10px;
+}
+.tx-piel-negra{
+  background-color:#1a1b1e;
+  background-image:
+    radial-gradient(circle at 30% 35%, rgba(255,255,255,.10) 0 1px, transparent 1.7px),
+    radial-gradient(circle at 72% 68%, rgba(0,0,0,.45) 0 1.3px, transparent 2px);
+  background-size: 8px 8px, 12px 12px;
+}
+
+/* ── Barra de zoom ── */
+.barra-zoom{
+  display:flex; align-items:center; gap:9px;
+  padding: 13px 44px;
+  border-top:1px solid var(--linea);
+  background:#fff;
+  position: sticky; bottom:0; z-index:25;
+  flex-wrap:wrap;
+}
+.zbtn{
+  background:#fff; border:1px solid var(--linea); border-radius:999px;
+  padding: 8px 16px; font-size:13px; font-weight:500; color:var(--tinta);
+  transition: border-color .15s, background .15s;
+}
+.zbtn:hover{ border-color:var(--tinta); }
+.zbtn.activo{ background:var(--tinta); border-color:var(--tinta); color:#fff; }
+.zbtn:disabled{ opacity:.35; cursor:not-allowed; }
+.zoom-lectura{
+  margin-left:auto; font-size:12px; color:var(--gris);
+  font-variant-numeric: tabular-nums; letter-spacing:.04em;
+}
+
+/* ══ RESPONSIVE ════════════════════════════════════════════════════ */
+
+@media (max-width: 1080px){
+  .catalogo{ grid-template-columns: 200px minmax(0,1fr); gap: 0 24px; padding: 18px 28px 60px; }
+  .topbar, .cabecera, .promo, .cab-detalle, .barra-zoom{ padding-left:28px; padding-right:28px; }
+  .menu{ gap:16px; }
+  .menu a{ font-size:14px; }
+  .buscador{ width:150px; }
+  .detalle{ grid-template-columns: minmax(0,1fr) 320px; }
+}
+@media (max-width: 860px){
+  .menu, .buscador{ display:none; }
+  .catalogo{ grid-template-columns: 1fr; padding: 16px 18px 50px; }
+  .filtros{ position:static; display:none; }
+  .filtros.abierto{ display:block; }
+  .topbar{ padding: 6px 18px; font-size:11px; gap:14px; }
+  .cabecera, .cab-detalle{ padding: 12px 18px; }
+  .promo{ padding: 8px 18px; font-size:12px; }
+  .barra-zoom{ padding: 11px 18px; }
+  .detalle{ grid-template-columns: 1fr; }
+  .escenario{
+    height: 56vw; min-height:260px; max-height:440px;
+    border-right:0; border-bottom:1px solid var(--linea);
+  }
+  .panel{ max-height:none; padding: 22px 18px 34px; }
+  .rejilla{ grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 22px 12px; }
+  .cab-resultados h1{ font-size:19px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ VISTA 1 · CATÁLOGO ══════════════════ -->
+<div id="vistaCatalogo">
+
+  <div class="topbar">
+    <a href="#">Buscar tienda</a><span class="sep">|</span>
+    <a href="#">Ayuda</a><span class="sep">|</span>
+    <a href="#">Únete</a><span class="sep">|</span>
+    <a href="#">Iniciar sesión</a>
+  </div>
+
+  <header class="cabecera">
+    <a class="marca" href="#">M K</a>
+    <ul class="menu">
+      <li><a href="#" aria-current="page">Lo nuevo</a></li>
+      <li><a href="#">Hombre</a></li>
+      <li><a href="#">Mujer</a></li>
+      <li><a href="#">Niños</a></li>
+      <li><a href="#">Descuentos</a></li>
+      <li><a href="#">Deportes</a></li>
+      <li><a href="#">Strength</a></li>
+    </ul>
+    <div class="acciones">
+      <div class="buscador">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2"
+             stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+        <input id="buscador" type="search" placeholder="Buscar" aria-label="Buscar">
+      </div>
+      <button class="icono" aria-label="Favoritos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.9">
+          <path d="M12 20.5S3.5 15 3.5 9.4A4.9 4.9 0 0 1 12 6a4.9 4.9 0 0 1 8.5 3.4C20.5 15 12 20.5 12 20.5z"/>
+        </svg>
+      </button>
+      <button class="icono" aria-label="Bolsa">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.9">
+          <path d="M5 8h14l-1.2 12.2H6.2L5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="promo">
+    <button class="flecha" aria-label="Anterior">‹</button>
+    <span>¡Hazte miembro y obtén 15% OFF con el cupón <b>BIENVENIDO15</b>! &nbsp;<a href="#">Ver T&amp;C. Ir a colección</a></span>
+    <button class="flecha" aria-label="Siguiente">›</button>
+  </div>
+
+  <main class="catalogo">
+    <aside class="filtros" id="filtros">
+      <div id="gruposFiltro"></div>
+      <div class="grupo" data-abierto="true">
+        <button class="grupo-cab">Lo nuevo <span class="chev">⌄</span></button>
+        <div class="grupo-cuerpo">
+          <label class="opcion"><input type="checkbox" id="fNuevo"> En MK</label>
+        </div>
+      </div>
+      <div class="filtros-pie">
+        <button class="btn-texto" id="limpiar">Limpiar filtros</button>
+      </div>
+    </aside>
+
+    <section class="resultados">
+      <p class="migas">Lo nuevo</p>
+      <div class="cab-resultados">
+        <h1>En MK Lo nuevo (<span id="nResultados">0</span>)</h1>
+        <div class="herramientas">
+          <button id="btnFiltros">Ocultar filtros
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2">
+              <path d="M4 7h16M7 12h10M10 17h4"/></svg>
+          </button>
+          <select id="orden" aria-label="Ordenar por">
+            <option value="relevancia">Ordenar por</option>
+            <option value="precio-asc">Precio: menor a mayor</option>
+            <option value="precio-desc">Precio: mayor a menor</option>
+            <option value="nombre">Nombre A–Z</option>
+          </select>
+        </div>
+      </div>
+      <div class="rejilla" id="rejilla"></div>
+      <div class="sin-resultados oculto" id="sinResultados">
+        No hay productos que coincidan con los filtros.
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ══════════════════ VISTA 2 · DETALLE ══════════════════ -->
+<div id="vistaDetalle" class="oculto">
+
+  <header class="cab-detalle">
+    <button class="volver" id="volver">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#111"
+           stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 5l-7 7 7 7"/></svg>
+      Volver
+    </button>
+    <span class="marca">M K</span>
+  </header>
+
+  <div class="detalle">
+    <div class="escenario" id="escenario">
+      <div class="lienzo" id="lienzo">
+        <img id="foto" alt="" draggable="false">
+        <div id="puntos"></div>
+      </div>
+      <div class="lupa" id="lupa"></div>
+    </div>
+
+    <aside class="panel">
+      <h2 id="pNombre">—</h2>
+      <p class="p-cat" id="pCategoria">—</p>
+      <p class="p-precio" id="pPrecio">—</p>
+      <p class="seccion">Piezas · pulsa para inspeccionar</p>
+      <div id="pLista"></div>
+      <div id="pFicha"></div>
+    </aside>
+  </div>
+
+  <div class="barra-zoom">
+    <button class="zbtn" id="zOut" aria-label="Alejar">−</button>
+    <button class="zbtn" id="zIn" aria-label="Acercar">+</button>
+    <button class="zbtn" id="zReset">Reiniciar</button>
+    <button class="zbtn" id="zLupa">Lupa</button>
+    <span class="zoom-lectura" id="zLectura">1.0×</span>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+/* ═══════════════════════════════════════════════════════════════════
+   1 · DATOS
+   Cada producto es autocontenido: imagen, tamaño natural y sus piezas
+   con la posición del hotspot en coordenadas de la imagen.
+   ═══════════════════════════════════════════════════════════════════ */
+
+const PRODUCTOS = [
+  {
+    id: "zapatillas-001",
+    nombre: "MK Terra High",
+    categoria: "Zapatillas para hombre",
+    genero: "Hombre",
+    tipo: "Caña alta",
+    precio: 429.90,
+    colores: 1,
+    nuevo: true,
+    etiquetas: ["Nuevo"],
+    img: "img/zapatillas-001-lateral.png",
+    // Vista adicional: solo el 001 tiene collage de ángulos por ahora.
+    angulos: "img/zapatillas-001-angulos.jpg",
+    w: 1448, h: 1086,
+    descripcion: "Caña alta en ante negro de plena flor, con entresuela acanalada de EVA y planta de caucho de tacos direccionales. Una silueta de líneas limpias que sujeta el tobillo sin añadir volumen.",
+    piezas: [
+      { id:"ante", n:1, x:950, y:480, label:"Ante", tex:"tx-ante",
+        material:"Ante de plena flor", tipo:"Nobuk",
+        desc:"Piel de grano completo lijada para levantar la flor, que queda aterciopelada y mate. Al no reflejar la luz como el cuero liso, el negro se ve más profundo y las costuras se leen mejor.",
+        specs:[["Espesor","1,5 mm"],["Acabado","Nobuk"],["Tratamiento","Repelente al agua"],["Origen","Tenería europea"]] },
+
+      { id:"lengua", n:2, x:700, y:250, label:"Lengua", tex:"tx-piel",
+        material:"Lengua acolchada", tipo:"Piel napa con relleno",
+        desc:"Lengua de piel napa con relleno de espuma y el borde rematado. Al ser caña alta, reparte la presión del cordón sobre todo el empeine en lugar de concentrarla en una línea.",
+        specs:[["Relleno","Espuma 10 mm"],["Forro","Tejido técnico"],["Borde","Rematado a mano"]] },
+
+      { id:"cordones", n:3, x:520, y:495, label:"Cordones", tex:"tx-trenza",
+        material:"Cordón plano trenzado", tipo:"Poliéster 8 mm",
+        desc:"Cordón plano de poliéster con trama cerrada y terminales metálicos. La trama tupida evita que se afloje al caminar, que es el fallo típico de los cordones redondos.",
+        specs:[["Ancho","8 mm"],["Largo","120 cm"],["Terminal","Metal"],["Composición","Poliéster 100 %"]] },
+
+      { id:"puntera", n:4, x:180, y:700, label:"Puntera", tex:"tx-ante",
+        material:"Puntera reforzada", tipo:"Ante con doble pespunte",
+        desc:"Panel delantero en ante con doble pespunte de refuerzo. Es la zona que más roza al flexionar el pie, y el ante aguanta ahí mejor que un cuero liso porque no se marca.",
+        specs:[["Costura","Doble pespunte"],["Capas","2"],["Espesor","1,6 mm"]] },
+
+      { id:"cuello", n:5, x:1130, y:325, label:"Cuello", tex:"tx-ante",
+        material:"Cuello acolchado", tipo:"Ante sobre espuma",
+        desc:"Borde superior forrado en ante sobre espuma de célula cerrada. La caña alta sujeta el tobillo por sí misma, sin necesidad de apretar el cordón hasta arriba.",
+        specs:[["Altura de caña","105 mm"],["Relleno","Espuma 12 mm"],["Forro","Microfibra"]] },
+
+      { id:"talon", n:6, x:1280, y:650, label:"Talón", tex:"tx-tpu",
+        material:"Estabilizador de talón", tipo:"TPU inyectado",
+        desc:"Pieza rígida que abraza el retropié por detrás de la entresuela. Evita que el talón gire dentro de la zapatilla en los apoyos laterales, que es donde se tuerce el tobillo.",
+        specs:[["Material","TPU inyectado"],["Dureza","85 Shore D"],["Acabado","Brillo"]] },
+
+      { id:"logo", n:7, x:760, y:130, label:"Logotipo", tex:"tx-piel",
+        material:"Placa de marca", tipo:"Piel grabada en caliente",
+        desc:"Placa cosida sobre la lengüeta, en piel con el relieve grabado a calor. Al ir cosida y no serigrafiada, no se agrieta con la flexión repetida.",
+        specs:[["Técnica","Grabado en caliente"],["Soporte","Piel"],["Costura","Perimetral"]] },
+
+      { id:"entresuela", n:8, x:600, y:830, label:"Entresuela", tex:"tx-espuma",
+        material:"Entresuela acanalada", tipo:"EVA inyectada",
+        desc:"EVA inyectada en una sola pieza con acanaladuras horizontales. Las estrías no son decorativas: permiten que la espuma flexione sin agrietarse por fatiga.",
+        specs:[["Altura talón","42 mm"],["Altura antepié","30 mm"],["Drop","12 mm"],["Dureza","55 Asker C"]] },
+
+      { id:"planta", n:9, x:760, y:918, label:"Planta", tex:"tx-goma",
+        material:"Planta exterior", tipo:"Caucho con tacos",
+        desc:"Caucho de alta densidad con tacos direccionales. El compuesto está pensado para asfalto y terreno suelto, no para pista cubierta.",
+        specs:[["Dureza","65 Shore A"],["Altura de taco","4 mm"],["Compuesto","Caucho + carbono"]] },
+
+      { id:"ojal", n:10, x:845, y:237, label:"Ojal", tex:"tx-metal",
+        material:"Ojal metálico", tipo:"Acero niquelado",
+        desc:"Ojal embutido en el borde de la caña. Reparte la tensión del cordón sobre el ante y evita que el tejido se desgarre con el uso continuado.",
+        specs:[["Material","Acero niquelado"],["Diámetro","6 mm"],["Acabado","Mate"]] }
+    ]
+  },
+  {
+    id: "zapatillas-002",
+    nombre: "MK Terra High Trío",
+    categoria: "Zapatillas para hombre",
+    genero: "Hombre",
+    tipo: "Caña alta",
+    precio: 459.90,
+    colores: 1,
+    nuevo: true,
+    etiquetas: ["Nuevo"],
+    img: "img/zapatillas-002-lateral.jpg",
+    // w/h describen el espacio de coordenadas de los hotspots (la imagen
+    // original). El JPEG servido es más pequeño pero con la misma proporción,
+    // y los puntos se colocan en porcentaje, así que coinciden.
+    w: 3600, h: 2688,
+    descripcion: "La misma caña alta resuelta en tres tonos de ante —verde bosque, camel y teja— con lengüeta de malla navy y cordones trenzados a contraste. Una lectura abiertamente cromática del mismo patrón.",
+    piezas: [
+      { id:"ante-verde", n:1, x:2143, y:1190, label:"Ante verde", tex:"tx-ante-verde",
+        material:"Ante de plena flor", tipo:"Nobuk verde bosque",
+        desc:"Panel principal en ante teñido en pieza, no en superficie. El color atraviesa toda la piel, así que no se desgasta antes que el propio material.",
+        specs:[["Espesor","1,5 mm"],["Tintura","En pieza"],["Acabado","Nobuk"],["Tratamiento","Repelente al agua"]] },
+
+      { id:"malla", n:2, x:1857, y:548, label:"Malla", tex:"tx-malla",
+        material:"Malla técnica", tipo:"Poliéster de doble capa",
+        desc:"Lengüeta de malla de dos capas: deja salir el calor sin ceder rigidez. La capa interior va calada para no marcar el empeine con el cordón.",
+        specs:[["Composición","Poliéster"],["Capas","2"],["Gramaje","210 g/m²"]] },
+
+      { id:"cordones", n:3, x:1150, y:1295, label:"Cordones", tex:"tx-trenza",
+        material:"Cordón trenzado bicolor", tipo:"Poliéster 8 mm",
+        desc:"Cordón plano trenzado con hilo naranja y verde. Es el único color que no viene del ante, y sirve de puente entre el tono teja y el verde del resto del modelo.",
+        specs:[["Ancho","8 mm"],["Largo","120 cm"],["Terminal","Metal"],["Composición","Poliéster"]] },
+
+      { id:"ante-camel", n:4, x:595, y:1786, label:"Ante camel", tex:"tx-ante-camel",
+        material:"Ante de plena flor", tipo:"Nobuk camel",
+        desc:"Ante camel en la puntera y el refuerzo de los ojales. Es la zona de más roce, y un tono claro disimula mejor el desgaste que uno oscuro.",
+        specs:[["Espesor","1,6 mm"],["Zona","Puntera y ojales"],["Acabado","Nobuk"]] },
+
+      { id:"cuello", n:5, x:2640, y:816, label:"Cuello", tex:"tx-ante-verde",
+        material:"Cuello acolchado", tipo:"Ante sobre espuma",
+        desc:"Borde de la caña forrado en el mismo ante verde sobre espuma de célula cerrada. La caña alta sujeta el tobillo por sí misma, sin apretar el cordón.",
+        specs:[["Altura de caña","105 mm"],["Relleno","Espuma 12 mm"],["Forro","Microfibra"]] },
+
+      { id:"ante-teja", n:6, x:2976, y:1476, label:"Ante teja", tex:"tx-ante-teja",
+        material:"Ante de plena flor", tipo:"Nobuk teja",
+        desc:"Panel del talón en ante teja. El corte a cuchillo contra el verde es el gesto que define el modelo: dos bloques de color separados por una costura.",
+        specs:[["Espesor","1,5 mm"],["Zona","Retropié"],["Acabado","Nobuk"]] },
+
+      { id:"logo", n:7, x:1905, y:310, label:"Piel del logo", tex:"tx-piel-naranja",
+        material:"Placa de piel", tipo:"Curtido al vegetal",
+        desc:"Placa en piel curtida al vegetal con el relieve grabado a calor. Va cosida al borde de la lengüeta, no serigrafiada, así que no se agrieta al flexionar.",
+        specs:[["Curtido","Vegetal"],["Técnica","Grabado en caliente"],["Costura","Perimetral"]] },
+
+      { id:"entresuela", n:8, x:1667, y:2095, label:"Entresuela", tex:"tx-espuma",
+        material:"Entresuela acanalada", tipo:"EVA inyectada",
+        desc:"EVA inyectada en una pieza con acanaladuras horizontales. El moteado no es decorativo: es carga mineral que sube la resistencia a la abrasión.",
+        specs:[["Altura talón","42 mm"],["Altura antepié","30 mm"],["Drop","12 mm"],["Dureza","55 Asker C"]] },
+
+      { id:"planta", n:9, x:1600, y:2280, label:"Planta", tex:"tx-goma-miel",
+        material:"Planta exterior", tipo:"Caucho color miel",
+        desc:"Caucho sin pigmentar, del color natural del compuesto, con tacos direccionales. Ese tono miel es el que cierra la paleta tierra de todo el modelo.",
+        specs:[["Dureza","65 Shore A"],["Altura de taco","4 mm"],["Compuesto","Caucho natural"]] },
+
+      { id:"ojal", n:10, x:2120, y:638, label:"Ojal", tex:"tx-metal",
+        material:"Ojal metálico", tipo:"Acero niquelado",
+        desc:"Ojal embutido en el borde de la caña. Reparte la tensión del cordón sobre el ante y evita que el tejido se desgarre con el uso continuado.",
+        specs:[["Material","Acero niquelado"],["Diámetro","6 mm"],["Acabado","Mate"]] }
+    ]
+  },
+  {
+    id: "zapatillas-003",
+    nombre: "MK Terra High Rojo",
+    categoria: "Zapatillas para hombre",
+    genero: "Hombre",
+    tipo: "Caña alta",
+    precio: 479.90,
+    colores: 1,
+    nuevo: true,
+    etiquetas: ["Nuevo"],
+    img: "img/zapatillas-003-lateral.jpg",
+    w: 2400, h: 1792,
+    descripcion: "La caña alta en rojo profundo, plomo y negro: ante en el cuerpo y la lengüeta, piel lisa en puntera y contrafuerte, y la misma entresuela acanalada. Tres materiales conviviendo en una silueta.",
+    piezas: [
+      { id:"ante-rojo", n:1, x:960, y:1120, label:"Ante rojo", tex:"tx-ante-rojo",
+        material:"Ante de plena flor", tipo:"Nobuk carmesí",
+        desc:"Cuerpo y lengüeta en ante teñido en rojo profundo. El ante se tiñe en pieza, no en superficie: en un rojo tan saturado eso es lo que evita que el color se vaya por las zonas de más roce.",
+        specs:[["Espesor","1,5 mm"],["Tintura","En pieza"],["Acabado","Nobuk"],["Tratamiento","Repelente al agua"]] },
+
+      { id:"ante-plomo", n:2, x:1750, y:780, label:"Ante plomo", tex:"tx-ante-plomo",
+        material:"Ante de plena flor", tipo:"Nobuk plomo",
+        desc:"Panel central en ante gris plomo, el tono que separa el rojo del cuerpo del negro del talón. Al ser un gris frío, corta la transición sin competir con ninguno de los dos.",
+        specs:[["Espesor","1,5 mm"],["Tono","Plomo frío"],["Acabado","Nobuk"]] },
+
+      { id:"piel-negra", n:3, x:2030, y:850, label:"Piel negra", tex:"tx-piel-negra",
+        material:"Piel de plena flor", tipo:"Acabado liso",
+        desc:"Piel lisa en la puntera y el contrafuerte del talón. A diferencia del ante, conserva la flor sin levantar, así que refleja la luz y aguanta mejor el roce continuado.",
+        specs:[["Espesor","1,6 mm"],["Acabado","Liso"],["Zona","Puntera y talón"]] },
+
+      { id:"cordones", n:4, x:910, y:750, label:"Cordones", tex:"tx-trenza",
+        material:"Cordón plano trenzado", tipo:"Poliéster 8 mm",
+        desc:"Cordón plano de poliéster en negro, con trama cerrada y terminales metálicos. La trama tupida evita que se afloje al caminar, que es el fallo típico de los cordones redondos.",
+        specs:[["Ancho","8 mm"],["Largo","120 cm"],["Terminal","Metal"],["Composición","Poliéster"]] },
+
+      { id:"lengua", n:5, x:1380, y:250, label:"Lengua", tex:"tx-piel-negra",
+        material:"Lengua acolchada", tipo:"Piel napa con relleno",
+        desc:"Lengua de piel negra con relleno de espuma y el borde rematado. La placa roja va cosida encima, así que refuerza justo la zona que más roza con el cordón.",
+        specs:[["Relleno","Espuma 10 mm"],["Forro","Tejido técnico"],["Borde","Rematado"]] },
+
+      { id:"logo", n:6, x:1280, y:215, label:"Piel del logo", tex:"tx-ante-rojo",
+        material:"Placa de piel", tipo:"Grabado en caliente",
+        desc:"Placa en piel roja con el relieve grabado a calor, cosida al borde de la lengüeta. Al ir cosida y no serigrafiada, no se agrieta con la flexión repetida.",
+        specs:[["Técnica","Grabado en caliente"],["Soporte","Piel"],["Costura","Perimetral"]] },
+
+      { id:"cuello", n:7, x:1800, y:470, label:"Cuello", tex:"tx-ante-plomo",
+        material:"Cuello acolchado", tipo:"Ante plomo sobre espuma",
+        desc:"Borde de la caña forrado en ante plomo sobre espuma de célula cerrada. La caña alta sujeta el tobillo por sí misma, sin necesidad de apretar el cordón hasta arriba.",
+        specs:[["Altura de caña","105 mm"],["Relleno","Espuma 12 mm"],["Forro","Microfibra"]] },
+
+      { id:"entresuela", n:8, x:780, y:1350, label:"Entresuela", tex:"tx-espuma",
+        material:"Entresuela acanalada", tipo:"EVA inyectada",
+        desc:"EVA inyectada en una sola pieza con acanaladuras horizontales. Las estrías no son decorativas: permiten que la espuma flexione sin agrietarse por fatiga.",
+        specs:[["Altura talón","42 mm"],["Altura antepié","30 mm"],["Drop","12 mm"],["Dureza","55 Asker C"]] },
+
+      { id:"planta", n:9, x:780, y:1520, label:"Planta", tex:"tx-goma",
+        material:"Planta exterior", tipo:"Caucho con tacos",
+        desc:"Caucho de alta densidad con tacos direccionales. El compuesto está pensado para asfalto y terreno suelto, no para pista cubierta.",
+        specs:[["Dureza","65 Shore A"],["Altura de taco","4 mm"],["Compuesto","Caucho + carbono"]] },
+
+      { id:"ojal", n:10, x:1412, y:406, label:"Ojal", tex:"tx-metal",
+        material:"Ojal metálico", tipo:"Acero niquelado",
+        desc:"Ojal embutido en el borde de la caña. Reparte la tensión del cordón sobre el ante y evita que el tejido se desgarre con el uso continuado.",
+        specs:[["Material","Acero niquelado"],["Diámetro","6 mm"],["Acabado","Mate"]] }
+    ]
+  },
+  {
+    id: "zapatillas-004",
+    nombre: "MK Court Low Negro",
+    categoria: "Zapatillas unisex",
+    genero: "Unisex",
+    tipo: "Caña baja",
+    precio: 389.90,
+    colores: 1,
+    nuevo: true,
+    etiquetas: ["Nuevo"],
+    img: "img/zapatillas-004-lateral.jpg",
+    w: 2390, h: 1792,
+    descripcion: "Zapatilla baja de corte clásico en ante negro, con tres franjas de piel lisa y suela de copa vulcanizada cosida al corte. Sin entresuela visible: la suela es un solo bloque.",
+    piezas: [
+      { id:"ante", n:1, x:1400, y:950, label:"Ante", tex:"tx-ante",
+        material:"Ante de plena flor", tipo:"Nobuk negro",
+        desc:"Corte en ante de plena flor, con la flor levantada. Es lo que le da el aspecto mate y hace que no se marque con el roce como una piel lisa.",
+        specs:[["Espesor","1,3 mm"],["Acabado","Nobuk"],["Tratamiento","Repelente al agua"]] },
+
+      { id:"franjas", n:2, x:1163, y:950, label:"Franjas", tex:"tx-piel",
+        material:"Franjas aplicadas", tipo:"Piel lisa",
+        desc:"Tres franjas de piel lisa cosidas sobre el corte. Van montadas y cosidas, no impresas, así que el relieve se mantiene aunque el ante se aplane con el uso.",
+        specs:[["Material","Piel lisa"],["Ancho","22 mm"],["Sujeción","Cosidas"]] },
+
+      { id:"cordones", n:3, x:820, y:750, label:"Cordones", tex:"tx-trenza",
+        material:"Cordón plano", tipo:"Algodón encerado 8 mm",
+        desc:"Cordón plano de algodón encerado. La cera cumple una función: evita que el nudo se afloje al caminar, que es el fallo típico de los cordones redondos.",
+        specs:[["Ancho","8 mm"],["Largo","110 cm"],["Acabado","Encerado"]] },
+
+      { id:"lengua", n:4, x:1400, y:490, label:"Lengua", tex:"tx-piel",
+        material:"Lengua de piel", tipo:"Piel napa",
+        desc:"Lengua en piel napa, fina y sin relleno. En un perfil bajo se agradece: mantiene el empeine cerca del pie sin abultar por delante.",
+        specs:[["Material","Piel napa"],["Relleno","Ninguno"],["Borde","Rematado"]] },
+
+      { id:"cuello", n:5, x:1500, y:620, label:"Cuello", tex:"tx-ante",
+        material:"Cuello acolchado", tipo:"Ante sobre espuma",
+        desc:"Borde de la boca forrado en ante sobre una espuma fina. Al ser caña baja el acolchado cumple una función concreta: que el canto no roce el tobillo.",
+        specs:[["Relleno","Espuma 6 mm"],["Forro","Microfibra"]] },
+
+      { id:"talonera", n:6, x:2040, y:715, label:"Talonera", tex:"tx-piel",
+        material:"Talonera de piel", tipo:"Piel lisa blanca",
+        desc:"Pieza blanca en el contrafuerte, en piel lisa. Además del contraste, refuerza justo la zona donde el talón empuja al caminar.",
+        specs:[["Material","Piel lisa"],["Función","Refuerzo"],["Zona","Retropié"]] },
+
+      { id:"puntera", n:7, x:300, y:1000, label:"Puntera", tex:"tx-ante",
+        material:"Puntera de ante", tipo:"Doble pespunte",
+        desc:"Antepié en el mismo ante, con doble pespunte de refuerzo. Es la zona que más flexiona, y el ante aguanta ahí mejor que una piel lisa porque no se marca.",
+        specs:[["Costura","Doble pespunte"],["Espesor","1,4 mm"]] },
+
+      { id:"entresuela", n:8, x:900, y:1230, label:"Entresuela", tex:"tx-espuma",
+        material:"Suela de copa", tipo:"Goma vulcanizada",
+        desc:"Suela de copa vulcanizada: un solo bloque que hace de entresuela y de planta a la vez. Va cosida y pegada al corte, y eso es lo que le da la forma de cuenco.",
+        specs:[["Altura","22 mm"],["Construcción","Vulcanizada + cosida"],["Perfil","Plano"]] },
+
+      { id:"planta", n:9, x:1000, y:1330, label:"Planta", tex:"tx-goma",
+        material:"Planta exterior", tipo:"Goma natural",
+        desc:"Goma natural en el fondo, con dibujo de tacos poco profundos. Está pensada para ciudad: agarra en seco y no se llena de piedras.",
+        specs:[["Material","Goma natural"],["Altura de taco","2 mm"],["Uso","Ciudad"]] },
+
+      { id:"forro", n:10, x:1250, y:610, label:"Forro", tex:"tx-tela",
+        material:"Forro interior", tipo:"Textil de algodón",
+        desc:"Forro textil en el interior. Al ser un corte bajo y sin membrana, transpira: el pie no se cuece en verano.",
+        specs:[["Composición","Algodón"],["Zona","Interior completo"]] }
+    ]
+  },
+  {
+    id: "zapatillas-005",
+    nombre: "MK Court Low Rojo",
+    categoria: "Zapatillas unisex",
+    genero: "Unisex",
+    tipo: "Caña baja",
+    precio: 389.90,
+    colores: 1,
+    nuevo: true,
+    etiquetas: ["Nuevo"],
+    img: "img/zapatillas-005-lateral.jpg",
+    w: 2400, h: 1792,
+    descripcion: "La misma zapatilla baja, ahora en ante rojo con franjas crema y lengüeta azul marino. Se mantiene la suela de copa, con el fondo de goma color miel.",
+    piezas: [
+      { id:"ante", n:1, x:1406, y:950, label:"Ante", tex:"tx-ante-rojo",
+        material:"Ante de plena flor", tipo:"Nobuk rojo",
+        desc:"Corte en ante de plena flor teñido en rojo. Al teñirse en pieza y no en superficie, el color aguanta el roce sin perder intensidad.",
+        specs:[["Espesor","1,3 mm"],["Tintura","En pieza"],["Acabado","Nobuk"]] },
+
+      { id:"franjas", n:2, x:1168, y:950, label:"Franjas", tex:"tx-piel",
+        material:"Franjas aplicadas", tipo:"Piel lisa crema",
+        desc:"Tres franjas de piel lisa en crema. Sobre el ante rojo el contraste es más cálido que un blanco puro, y eso suaviza el conjunto.",
+        specs:[["Material","Piel lisa"],["Ancho","22 mm"],["Sujeción","Cosidas"]] },
+
+      { id:"cordones", n:3, x:823, y:750, label:"Cordones", tex:"tx-trenza",
+        material:"Cordón plano", tipo:"Algodón encerado 8 mm",
+        desc:"Cordón plano de algodón encerado. La cera evita que el nudo se afloje al caminar, que es el fallo típico de los cordones redondos.",
+        specs:[["Ancho","8 mm"],["Largo","110 cm"],["Acabado","Encerado"]] },
+
+      { id:"lengua", n:4, x:1406, y:490, label:"Lengua", tex:"tx-tela",
+        material:"Lengua de piel", tipo:"Piel napa azul marino",
+        desc:"Lengua en piel napa azul marino, fina y sin relleno. El azul es el único tono frío del modelo y por eso se reserva a la lengüeta, donde no compite con el rojo.",
+        specs:[["Material","Piel napa"],["Relleno","Ninguno"],["Borde","Rematado"]] },
+
+      { id:"cuello", n:5, x:1506, y:620, label:"Cuello", tex:"tx-tela",
+        material:"Cuello acolchado", tipo:"Textil sobre espuma",
+        desc:"Borde de la boca en textil azul marino sobre espuma fina. Al ser caña baja, el acolchado evita que el canto roce el tobillo.",
+        specs:[["Relleno","Espuma 6 mm"],["Forro","Microfibra"]] },
+
+      { id:"talonera", n:6, x:2049, y:715, label:"Talonera", tex:"tx-piel",
+        material:"Talonera de piel", tipo:"Piel lisa crema",
+        desc:"Pieza crema en el contrafuerte, en piel lisa. Además del contraste, refuerza la zona donde el talón empuja al caminar.",
+        specs:[["Material","Piel lisa"],["Función","Refuerzo"],["Zona","Retropié"]] },
+
+      { id:"puntera", n:7, x:301, y:1000, label:"Puntera", tex:"tx-ante-rojo",
+        material:"Puntera de ante", tipo:"Doble pespunte",
+        desc:"Antepié en el mismo ante rojo, con doble pespunte. Es la zona que más flexiona y el ante aguanta ahí mejor que una piel lisa.",
+        specs:[["Costura","Doble pespunte"],["Espesor","1,4 mm"]] },
+
+      { id:"entresuela", n:8, x:904, y:1230, label:"Entresuela", tex:"tx-espuma",
+        material:"Suela de copa", tipo:"Goma vulcanizada",
+        desc:"Suela de copa vulcanizada: un solo bloque que hace de entresuela y de planta. Va cosida y pegada al corte, y eso le da la forma de cuenco.",
+        specs:[["Altura","22 mm"],["Construcción","Vulcanizada + cosida"],["Perfil","Plano"]] },
+
+      { id:"planta", n:9, x:1004, y:1330, label:"Planta", tex:"tx-goma-miel",
+        material:"Planta exterior", tipo:"Goma natural color miel",
+        desc:"Goma natural sin pigmentar, del color del propio compuesto. El tono miel es el que cierra la paleta cálida del modelo.",
+        specs:[["Material","Goma natural"],["Altura de taco","2 mm"],["Uso","Ciudad"]] },
+
+      { id:"forro", n:10, x:1255, y:610, label:"Forro", tex:"tx-tela",
+        material:"Forro interior", tipo:"Textil de algodón",
+        desc:"Forro textil en el interior. Al ser un corte bajo y sin membrana, transpira: el pie no se cuece en verano.",
+        specs:[["Composición","Algodón"],["Zona","Interior completo"]] }
+    ]
+  }
+];
+
+/* Facetas del filtro, derivadas de los productos */
+const FILTROS = [
+  { id:"genero",   titulo:"Género",    campo:"genero"   },
+  { id:"tipo",     titulo:"Categoría", campo:"tipo"     },
+  { id:"etiqueta", titulo:"Etiqueta",  campo:"etiquetas" }
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   2 · ESTADO
+   ═══════════════════════════════════════════════════════════════════ */
+
+const $ = (s) => document.querySelector(s);
+
+const E = {
+  seleccion: new Set(),   // claves "grupo:valor" activas
+  soloNuevo: false,
+  orden: "relevancia",
+  busqueda: "",
+  producto: null
+};
+
+/* ═══════════════════════════════════════════════════════════════════
+   3 · CATÁLOGO
+   ═══════════════════════════════════════════════════════════════════ */
+
+const eur = (n) => "S/ " + n.toFixed(2);
+
+function valoresDe(p, campo){
+  const v = p[campo];
+  return Array.isArray(v) ? v : [v];
+}
+
+function productosFiltrados(){
+  let lista = PRODUCTOS.filter(p => {
+    if (E.soloNuevo && !p.nuevo) return false;
+    if (E.busqueda){
+      const t = (p.nombre + " " + p.categoria + " " + p.tipo).toLowerCase();
+      if (!t.includes(E.busqueda)) return false;
+    }
+    for (const f of FILTROS){
+      const activos = [...E.seleccion]
+        .filter(k => k.startsWith(f.id + ":"))
+        .map(k => k.slice(f.id.length + 1));
+      if (activos.length && !activos.some(v => valoresDe(p, f.campo).includes(v))){
+        return false;
+      }
+    }
+    return true;
+  });
+
+  if (E.orden === "precio-asc")  lista = lista.slice().sort((a,b) => a.precio - b.precio);
+  if (E.orden === "precio-desc") lista = lista.slice().sort((a,b) => b.precio - a.precio);
+  if (E.orden === "nombre")      lista = lista.slice().sort((a,b) => a.nombre.localeCompare(b.nombre,"es"));
+  return lista;
+}
+
+function pintarGrupos(){
+  $("#gruposFiltro").innerHTML = FILTROS.map(f => {
+    const valores = [...new Set(PRODUCTOS.flatMap(p => valoresDe(p, f.campo)))].sort();
+    const opciones = valores.map(v => `
+      <label class="opcion">
+        <input type="checkbox" data-grupo="${f.id}" value="${v}">
+        ${v}
+      </label>`).join("");
+    return `
+      <div class="grupo" data-abierto="false">
+        <button class="grupo-cab">${f.titulo} <span class="chev">⌄</span></button>
+        <div class="grupo-cuerpo">${opciones}</div>
+      </div>`;
+  }).join("");
+}
+
+function pintarRejilla(){
+  const lista = productosFiltrados();
+  $("#nResultados").textContent = lista.length;
+  $("#sinResultados").classList.toggle("oculto", lista.length > 0);
+
+  $("#rejilla").innerHTML = lista.map(p => `
+    <article class="tarjeta">
+      <div class="tarjeta-foto" data-abrir="${p.id}" role="button" tabindex="0"
+           aria-label="Ver ${p.nombre}">
+        <button class="tarjeta-fav" aria-pressed="false" aria-label="Añadir a favoritos"
+                data-fav>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.9">
+            <path d="M12 20.5S3.5 15 3.5 9.4A4.9 4.9 0 0 1 12 6a4.9 4.9 0 0 1 8.5 3.4C20.5 15 12 20.5 12 20.5z"/>
+          </svg>
+        </button>
+        <img src="${p.img}" alt="${p.nombre}" loading="lazy">
+      </div>
+      <div class="tarjeta-info">
+        ${p.nuevo ? '<span class="insignia">Nuevo</span>' : ""}
+        <h3>${p.nombre}</h3>
+        <p class="cat">${p.categoria}</p>
+        <p class="colores">${p.colores} ${p.colores === 1 ? "Color" : "Colores"}</p>
+        <p class="precio">${eur(p.precio)}</p>
+      </div>
+    </article>`).join("");
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   4 · DETALLE · zoom, paneo y lupa sobre la fotografía
+   ═══════════════════════════════════════════════════════════════════ */
+
+const escenario = $("#escenario");
+const lienzo    = $("#lienzo");
+const foto      = $("#foto");
+const puntosEl  = $("#puntos");
+const lupaEl    = $("#lupa");
+
+const K_MIN = 1, K_MAX = 5, LUPA_F = 2.6;
+
+const Z = { k:1, tx:0, ty:0, ancho:0, alto:0, lupa:false, arrastrando:false, sel:null };
+let puntos = [];
+let arrastroReciente = false;
+let ultimo = null;
+
+/* Ajusta el lienzo para que la imagen encaje entera en el escenario */
+function ajustarLienzo(){
+  const r = escenario.getBoundingClientRect();
+  if (!(r.width > 0) || !Z.producto) return null;
+  const base = Math.min(r.width / Z.producto.w, r.height / Z.producto.h);
+  Z.ancho = Z.producto.w * base;
+  Z.alto  = Z.producto.h * base;
+  lienzo.style.width  = Z.ancho + "px";
+  lienzo.style.height = Z.alto  + "px";
+  return r;
+}
+
+function limitar(){
+  const r = escenario.getBoundingClientRect();
+  const aw = Z.ancho * Z.k, ah = Z.alto * Z.k;
+  Z.tx = (aw <= r.width)  ? (r.width  - aw) / 2 : Math.min(0, Math.max(r.width  - aw, Z.tx));
+  Z.ty = (ah <= r.height) ? (r.height - ah) / 2 : Math.min(0, Math.max(r.height - ah, Z.ty));
+}
+
+function aplicar(){
+  limitar();
+  lienzo.style.transform = `translate(${Z.tx}px, ${Z.ty}px) scale(${Z.k})`;
+  // Los puntos se contrarrestan para medir siempre lo mismo en pantalla
+  const inv = 1 / Z.k;
+  puntos.forEach(el => { el.style.transform = `translate(-50%,-50%) scale(${inv})`; });
+  $("#zLectura").textContent = Z.k.toFixed(1) + "×";
+  escenario.classList.toggle("zoom", Z.k > 1.02);
+  $("#zOut").disabled = Z.k <= K_MIN + 0.001;
+  $("#zIn").disabled  = Z.k >= K_MAX - 0.001;
+  actualizarLupa();
+}
+
+function zoomEn(factor, px, py){
+  const k2 = Math.min(K_MAX, Math.max(K_MIN, Z.k * factor));
+  if (Math.abs(k2 - Z.k) < 1e-4) return;
+  // La imagen bajo el cursor debe quedarse quieta
+  const ux = (px - Z.tx) / Z.k, uy = (py - Z.ty) / Z.k;
+  Z.tx = px - ux * k2;
+  Z.ty = py - uy * k2;
+  Z.k  = k2;
+  aplicar();
+}
+
+/* Cursor -> coordenadas relativas al escenario */
+function relativo(e){
+  const r = escenario.getBoundingClientRect();
+  return { x: e.clientX - r.left, y: e.clientY - r.top };
+}
+
+function actualizarLupa(){
+  if (!Z.lupa || !Z.producto){ lupaEl.classList.remove("activa"); return; }
+  const r = escenario.getBoundingClientRect();
+  const R = 95;                       // radio de la lupa en px
+  const ux = Math.min(Z.ancho, Math.max(0, (Z.px - Z.tx) / Z.k));
+  const uy = Math.min(Z.alto,  Math.max(0, (Z.py - Z.ty) / Z.k));
+  const escala = Z.k * LUPA_F;
+
+  lupaEl.style.left = Z.px + "px";
+  lupaEl.style.top  = Z.py + "px";
+  lupaEl.style.backgroundImage = `url("${Z.producto.img}")`;
+  lupaEl.style.backgroundSize  = `${Z.ancho * escala}px ${Z.alto * escala}px`;
+  lupaEl.style.backgroundPosition =
+    `${-(ux * escala) + R}px ${-(uy * escala) + R}px`;
+  const p = Z.sel ? Z.producto.piezas.find(q => q.id === Z.sel) : null;
+  lupaEl.dataset.label = (p ? p.label : "material") + " · " + LUPA_F.toFixed(1) + "×";
+  lupaEl.classList.add("activa");
+}
+
+/* ── Piezas ── */
+function pintarPuntos(){
+  const p = Z.producto;
+  puntosEl.innerHTML = p.piezas.map(q => `
+    <button class="punto" data-pieza="${q.id}" data-label="${q.label}"
+            aria-pressed="false" style="left:${(q.x / p.w * 100).toFixed(4)}%;
+            top:${(q.y / p.h * 100).toFixed(4)}%">${q.n}</button>`).join("");
+  puntos = [...puntosEl.querySelectorAll(".punto")];
+  aplicar();
+}
+
+function pintarLista(){
+  $("#pLista").innerHTML = Z.producto.piezas.map(q => `
+    <button class="pieza" data-pieza="${q.id}" aria-pressed="false">
+      <span class="n">${q.n}</span>${q.label}
+    </button>`).join("");
+}
+
+function seleccionar(id){
+  Z.sel = id;
+  puntos.forEach(el => {
+    const on = el.dataset.pieza === id;
+    el.setAttribute("aria-pressed", on);
+    el.classList.toggle("atenuado", !!id && !on);
+  });
+  document.querySelectorAll(".pieza").forEach(b => {
+    b.setAttribute("aria-pressed", b.dataset.pieza === id);
+  });
+  pintarFicha();
+  actualizarLupa();
+}
+
+function pintarFicha(){
+  const cont = $("#pFicha");
+  if (!Z.sel){
+    cont.innerHTML = `<div class="aviso">
+      <b>Ninguna pieza seleccionada</b>
+      Pulsa un punto sobre el calzado, o una pieza de la lista, para ver
+      su material y sus especificaciones.</div>`;
+    return;
+  }
+  const q = Z.producto.piezas.find(x => x.id === Z.sel);
+  cont.innerHTML = `
+    <div class="ficha">
+      <div class="ficha-muestra ${q.tex}"><span>Muestra · ${q.label}</span></div>
+      <h3>${q.material}</h3>
+      <p class="tipo">${q.tipo}</p>
+      <p class="desc">${q.desc}</p>
+      <dl class="especificaciones">
+        ${q.specs.map(([k,v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}
+      </dl>
+    </div>`;
+}
+
+/* Centra la vista sobre una pieza */
+function enfocar(id){
+  const q = Z.producto.piezas.find(x => x.id === id);
+  if (!q) return;
+  const r = escenario.getBoundingClientRect();
+  const k2 = 2.6;
+  const ux = q.x / Z.producto.w * Z.ancho;
+  const uy = q.y / Z.producto.h * Z.alto;
+  // Nunca acercar más allá de lo que la imagen permite
+  Z.k = Math.min(k2, K_MAX);
+  Z.tx = r.width  / 2 - ux * Z.k;
+  Z.ty = r.height / 2 - uy * Z.k;
+  aplicar();
+}
+
+function abrirDetalle(id, silencioso){
+  const p = PRODUCTOS.find(x => x.id === id);
+  if (!p) return;
+  if (!silencioso) location.hash = "#/" + id;
+  Z.producto = p; Z.sel = null; Z.k = 1; Z.tx = 0; Z.ty = 0; Z.px = 0; Z.py = 0;
+
+  foto.src = p.img;
+  foto.alt = p.nombre;
+  $("#pNombre").textContent = p.nombre;
+  $("#pCategoria").textContent = p.categoria;
+  $("#pPrecio").textContent = eur(p.precio);
+
+  pintarLista();
+  $("#vistaCatalogo").classList.add("oculto");
+  $("#vistaDetalle").classList.remove("oculto");
+  window.scrollTo(0,0);
+
+  // Esperar a que la imagen tenga tamaño para calcular el lienzo
+  const listo = () => { ajustarLienzo(); pintarPuntos(); pintarFicha(); aplicar(); };
+  if (foto.complete) requestAnimationFrame(listo);
+  else foto.addEventListener("load", () => requestAnimationFrame(listo), { once:true });
+}
+
+function cerrarDetalle(silencioso){
+  if (!silencioso) history.replaceState(null, "", location.pathname + location.search);
+  $("#vistaDetalle").classList.add("oculto");
+  $("#vistaCatalogo").classList.remove("oculto");
+  Z.lupa = false;
+  $("#zLupa").classList.remove("activo");
+  lupaEl.classList.remove("activa");
+  Z.sel = null;
+}
+
+/* Enlace profundo: #/id-producto abre directamente su ficha */
+function sincronizarHash(){
+  const m = location.hash.match(/^#\/(.+)$/);
+  const abierto = !$("#vistaDetalle").classList.contains("oculto");
+  if (m && (!abierto || !Z.producto || Z.producto.id !== m[1])) abrirDetalle(m[1], true);
+  else if (!m && abierto) cerrarDetalle(true);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   5 · EVENTOS
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Grupos de filtro: abrir y cerrar */
+document.addEventListener("click", (e) => {
+  const cab = e.target.closest(".grupo-cab");
+  if (cab){
+    const g = cab.parentElement;
+    g.dataset.abierto = g.dataset.abierto === "true" ? "false" : "true";
+    return;
+  }
+  const fav = e.target.closest("[data-fav]");
+  if (fav){
+    e.stopPropagation();
+    fav.setAttribute("aria-pressed", fav.getAttribute("aria-pressed") !== "true");
+    return;
+  }
+  const abrir = e.target.closest("[data-abrir]");
+  if (abrir){ abrirDetalle(abrir.dataset.abrir); return; }
+});
+
+/* Filtros y búsqueda */
+$("#gruposFiltro").addEventListener("change", (e) => {
+  const c = e.target;
+  if (c.type !== "checkbox") return;
+  const clave = c.dataset.grupo + ":" + c.value;
+  c.checked ? E.seleccion.add(clave) : E.seleccion.delete(clave);
+  pintarRejilla();
+});
+$("#fNuevo").addEventListener("change", (e) => { E.soloNuevo = e.target.checked; pintarRejilla(); });
+$("#limpiar").addEventListener("click", () => {
+  E.seleccion.clear(); E.soloNuevo = false; E.busqueda = "";
+  document.querySelectorAll('#gruposFiltro input[type=checkbox]').forEach(c => c.checked = false);
+  $("#fNuevo").checked = false;
+  $("#buscador").value = "";
+  pintarRejilla();
+});
+$("#orden").addEventListener("change", (e) => { E.orden = e.target.value; pintarRejilla(); });
+$("#buscador").addEventListener("input", (e) => {
+  E.busqueda = e.target.value.trim().toLowerCase(); pintarRejilla();
+});
+$("#btnFiltros").addEventListener("click", () => {
+  const f = $("#filtros");
+  f.classList.toggle("abierto");
+  const visible = getComputedStyle(f).display !== "none";
+  $("#btnFiltros").firstChild.textContent = visible ? "Ocultar filtros" : "Mostrar filtros";
+});
+
+/* Volver */
+$("#volver").addEventListener("click", () => cerrarDetalle());
+window.addEventListener("hashchange", sincronizarHash);
+
+/* Selección de pieza */
+puntosEl.addEventListener("click", (e) => {
+  const b = e.target.closest(".punto");
+  if (!b || arrastroReciente) return;
+  const id = b.dataset.pieza;
+  seleccionar(id === Z.sel ? null : id);
+});
+$("#pLista").addEventListener("click", (e) => {
+  const b = e.target.closest(".pieza"); if (!b) return;
+  const id = b.dataset.pieza;
+  seleccionar(id === Z.sel ? null : id);
+  if (Z.sel) enfocar(Z.sel);
+});
+
+/* Rueda = zoom hacia el cursor */
+escenario.addEventListener("wheel", (e) => {
+  e.preventDefault();
+  const p = relativo(e);
+  Z.px = p.x; Z.py = p.y;
+  zoomEn(e.deltaY < 0 ? 1.15 : 1/1.15, p.x, p.y);
+}, { passive:false });
+
+/* Arrastrar = desplazar */
+escenario.addEventListener("pointerdown", (e) => {
+  if (e.button !== 0) return;
+  Z.arrastrando = true;
+  arrastroReciente = false;
+  ultimo = { x:e.clientX, y:e.clientY, tx:Z.tx, ty:Z.ty };
+  escenario.classList.add("arrastrando");
+  escenario.setPointerCapture(e.pointerId);
+});
+
+escenario.addEventListener("pointermove", (e) => {
+  const r = escenario.getBoundingClientRect();
+  Z.px = e.clientX - r.left;
+  Z.py = e.clientY - r.top;
+
+  if (Z.arrastrando && ultimo){
+    const dx = e.clientX - ultimo.x, dy = e.clientY - ultimo.y;
+    if (Math.abs(dx) + Math.abs(dy) > 3) arrastroReciente = true;
+    Z.tx = ultimo.tx + dx;
+    Z.ty = ultimo.ty + dy;
+    aplicar();
+  } else {
+    actualizarLupa();
+  }
+});
+
+function soltar(e){
+  if (!Z.arrastrando) return;
+  Z.arrastrando = false; ultimo = null;
+  escenario.classList.remove("arrastrando");
+  try { escenario.releasePointerCapture(e.pointerId); } catch(_){}
+  setTimeout(() => { arrastroReciente = false; }, 60);
+}
+escenario.addEventListener("pointerup", soltar);
+escenario.addEventListener("pointercancel", soltar);
+escenario.addEventListener("pointerleave", () => lupaEl.classList.remove("activa"));
+escenario.addEventListener("dblclick", () => reiniciarZoom());
+
+/* Botones */
+function reiniciarZoom(){ Z.k = 1; Z.tx = 0; Z.ty = 0; ajustarLienzo(); aplicar(); }
+$("#zIn").addEventListener("click", () => {
+  const r = escenario.getBoundingClientRect();
+  zoomEn(1.4, r.width/2, r.height/2);
+});
+$("#zOut").addEventListener("click", () => {
+  const r = escenario.getBoundingClientRect();
+  zoomEn(1/1.4, r.width/2, r.height/2);
+});
+$("#zReset").addEventListener("click", () => { seleccionar(null); reiniciarZoom(); });
+$("#zLupa").addEventListener("click", (e) => {
+  Z.lupa = !Z.lupa;
+  e.currentTarget.classList.toggle("activo", Z.lupa);
+  actualizarLupa();
+});
+
+/* Teclado */
+document.addEventListener("keydown", (e) => {
+  if ($("#vistaDetalle").classList.contains("oculto")) return;
+  if (e.target.matches("input, select, textarea")) return;
+  const k = e.key.toLowerCase();
+  if (k === "escape"){ cerrarDetalle(); return; }
+  if (k === "l"){ $("#zLupa").click(); return; }
+  if (k === "0"){ seleccionar(null); reiniciarZoom(); return; }
+  const n = parseInt(k, 10);
+  if (n >= 1 && n <= 9){
+    const q = Z.producto.piezas.find(x => x.n === n);
+    if (q){ seleccionar(q.id); enfocar(q.id); }
+  }
+});
+
+/* Al cambiar el tamaño hay que recalcular el lienzo */
+let temporizador;
+window.addEventListener("resize", () => {
+  clearTimeout(temporizador);
+  temporizador = setTimeout(() => {
+    if ($("#vistaDetalle").classList.contains("oculto")) return;
+    ajustarLienzo();
+    aplicar();
+  }, 140);
+});
+
+/* ═══════════════════════════════════════════════════════════════════
+   6 · ARRANQUE
+   ═══════════════════════════════════════════════════════════════════ */
+
+pintarGrupos();
+pintarRejilla();
+sincronizarHash();
+</script>
+</body>
+</html>

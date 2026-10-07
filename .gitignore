@@ -1,0 +1,5 @@
+# temporales de los generadores
+__pycache__/
+*.pyc
+.catalogo-*.jpg
+.extraer.js
